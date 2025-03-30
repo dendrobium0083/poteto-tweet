@@ -35,6 +35,10 @@ namespace Poteto.Application.Services
 
             // 登録されたユーザ情報の取得
             var createdUser = await _userRepository.GetUserByIdAsync(newUserId);
+            if (createdUser == null)
+            {
+                throw new InvalidOperationException("ユーザの登録に失敗しました。");
+            }
 
             // DTO への変換
             return new UserDTO

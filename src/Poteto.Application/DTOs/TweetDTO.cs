@@ -21,7 +21,7 @@ namespace Poteto.Application.DTOs
         /// <summary>
         /// ツイートの内容
         /// </summary>
-        public string Content { get; set; }
+        public string? Content { get; set; }
 
         /// <summary>
         /// ツイートの作成日時
@@ -36,6 +36,6 @@ namespace Poteto.Application.DTOs
         /// <summary>
         /// ツイートに対するコメントの一覧
         /// </summary>
-        public IEnumerable<CommentDTO> Comments { get; set; }
+        public IEnumerable<CommentDTO>? Comments { get; set; }
     }
 }

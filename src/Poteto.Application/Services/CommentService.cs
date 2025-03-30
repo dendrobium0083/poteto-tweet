@@ -35,6 +35,10 @@ namespace Poteto.Application.Services
 
             // 登録後のコメント情報を取得（または comment エンティティに commentId を設定しても良い）
             comment = await _commentRepository.GetCommentByIdAsync(commentId);
+            if (comment == null)
+            {
+                throw new InvalidOperationException("コメントの登録に失敗しました。");
+            }
 
             // DTO への変換
             return new CommentDTO

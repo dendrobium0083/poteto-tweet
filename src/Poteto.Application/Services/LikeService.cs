@@ -32,6 +32,10 @@ namespace Poteto.Application.Services
 
             // 登録後のいいね情報を取得（または、生成したエンティティに likeId を設定しても良い）
             like = await _likeRepository.GetLikeAsync(tweetId, userId);
+            if (like == null)
+            {
+                throw new InvalidOperationException("いいねの登録に失敗しました。");
+            }
 
             // DTO への変換
             return new LikeDTO

@@ -15,12 +15,12 @@ namespace Poteto.Application.DTOs
         /// <summary>
         /// ユーザ名（ユニーク）
         /// </summary>
-        public string UserName { get; set; }
+        public string? UserName { get; set; }
 
         /// <summary>
         /// ユーザのメールアドレス
         /// </summary>
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
         /// <summary>
         /// ユーザ登録日時

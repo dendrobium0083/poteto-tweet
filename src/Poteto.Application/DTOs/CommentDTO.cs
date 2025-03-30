@@ -25,7 +25,7 @@ namespace Poteto.Application.DTOs
         /// <summary>
         /// コメントの内容
         /// </summary>
-        public string Content { get; set; }
+        public string? Content { get; set; }
 
         /// <summary>
         /// コメントの作成日時

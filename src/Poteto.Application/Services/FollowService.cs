@@ -32,6 +32,10 @@ namespace Poteto.Application.Services
 
             // 登録後のフォロー情報の取得（または、生成したエンティティに followId を設定しても良い）
             follow = await _followRepository.GetFollowAsync(followerId, followeeId);
+            if (follow == null)
+            {
+                throw new InvalidOperationException("フォローの登録に失敗しました。");
+            }
 
             // DTO への変換
             return new FollowDTO
