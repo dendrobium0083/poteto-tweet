@@ -11,8 +11,8 @@ namespace Poteto.Infrastructure.Data
     // ユーザに対する DB 操作を抽象化するインターフェース
     public interface IUserRepository
     {
-        Task<User> GetUserByIdAsync(int userId);
-        Task<User> GetUserByEmailAsync(string email);
+        Task<User?> GetUserByIdAsync(int userId);
+        Task<User?> GetUserByEmailAsync(string email);
         Task<int> CreateUserAsync(User user);
         // 必要に応じて、Update や Delete なども定義
     }
@@ -30,12 +30,12 @@ namespace Poteto.Infrastructure.Data
                 throw new ArgumentNullException(nameof(unitOfWork));
 
             // トランザクションから接続を取得
-            _connection = unitOfWork.Transaction.Connection;
-            _transaction = unitOfWork.Transaction;
+            _connection = unitOfWork.Transaction.Connection ?? throw new InvalidOperationException("Connection is null");
+            _transaction = unitOfWork.Transaction ?? throw new InvalidOperationException("Transaction is null");
         }
 
         // ユーザIDでユーザ情報を取得する
-        public async Task<User> GetUserByIdAsync(int userId)
+        public async Task<User?> GetUserByIdAsync(int userId)
         {
             string sql = "SELECT * FROM Users WHERE UserId = :UserId";
             return await _connection.QueryFirstOrDefaultAsync<User>(
@@ -46,7 +46,7 @@ namespace Poteto.Infrastructure.Data
         }
 
         // メールアドレスでユーザ情報を取得する
-        public async Task<User> GetUserByEmailAsync(string email)
+        public async Task<User?> GetUserByEmailAsync(string email)
         {
             string sql = "SELECT * FROM Users WHERE Email = :Email";
             return await _connection.QueryFirstOrDefaultAsync<User>(

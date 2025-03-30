@@ -12,7 +12,7 @@ namespace Poteto.Infrastructure.Data
     // Block に対する DB 操作を抽象化するインターフェース
     public interface IBlockRepository
     {
-        Task<Block> GetBlockAsync(int blockerId, int blockedId);
+        Task<Block?> GetBlockAsync(int blockerId, int blockedId);
         Task<IEnumerable<Block>> GetBlocksByBlockerIdAsync(int blockerId);
         Task<int> CreateBlockAsync(Block block);
         Task DeleteBlockAsync(int blockerId, int blockedId);
@@ -30,12 +30,12 @@ namespace Poteto.Infrastructure.Data
             if (unitOfWork == null)
                 throw new ArgumentNullException(nameof(unitOfWork));
 
-            _connection = unitOfWork.Transaction.Connection;
-            _transaction = unitOfWork.Transaction;
+            _connection = unitOfWork.Transaction.Connection ?? throw new InvalidOperationException("Connection is null");
+            _transaction = unitOfWork.Transaction ?? throw new InvalidOperationException("Transaction is null");
         }
 
         // 指定のブロック関係（Blocker と Blocked の組み合わせ）を取得
-        public async Task<Block> GetBlockAsync(int blockerId, int blockedId)
+        public async Task<Block?> GetBlockAsync(int blockerId, int blockedId)
         {
             string sql = "SELECT * FROM Blocks WHERE BlockerId = :BlockerId AND BlockedId = :BlockedId";
             return await _connection.QueryFirstOrDefaultAsync<Block>(

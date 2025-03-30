@@ -44,14 +44,15 @@ namespace Poteto.Domain.ValueObjects
         }
 
         // 等価性の比較：ハッシュ値同士で比較
-        public bool Equals(Password other)
+        public bool Equals(Password? other)
         {
             if (other == null) return false;
             return string.Equals(HashedValue, other.HashedValue, StringComparison.Ordinal);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
+            if (obj == null) return false;
             return Equals(obj as Password);
         }
 

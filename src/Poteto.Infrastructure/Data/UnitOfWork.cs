@@ -39,7 +39,8 @@ namespace Poteto.Infrastructure.Data
         {
             try
             {
-                _transaction?.Commit();
+                if (_transaction == null) return;
+                _transaction.Commit();
                 _transaction.Dispose();
                 _transaction = _connection.BeginTransaction();
             }
@@ -55,7 +56,8 @@ namespace Poteto.Infrastructure.Data
         /// </summary>
         public void Rollback()
         {
-            _transaction?.Rollback();
+            if (_transaction == null) return;
+            _transaction.Rollback();
             _transaction.Dispose();
             _transaction = _connection.BeginTransaction();
         }

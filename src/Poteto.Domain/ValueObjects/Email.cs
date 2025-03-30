@@ -23,14 +23,15 @@ namespace Poteto.Domain.ValueObjects
         }
 
         // 等価性の比較：大文字小文字を区別せずに比較
-        public bool Equals(Email other)
+        public bool Equals(Email? other)
         {
             if (other == null) return false;
             return string.Equals(Value, other.Value, StringComparison.OrdinalIgnoreCase);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
+            if (obj == null) return false;
             return Equals(obj as Email);
         }
 

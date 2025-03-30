@@ -12,7 +12,7 @@ namespace Poteto.Infrastructure.Data
     // Follow に対する DB 操作を抽象化するインターフェース
     public interface IFollowRepository
     {
-        Task<Follow> GetFollowAsync(int followerId, int followeeId);
+        Task<Follow?> GetFollowAsync(int followerId, int followeeId);
         Task<IEnumerable<Follow>> GetFollowersAsync(int followeeId);
         Task<IEnumerable<Follow>> GetFolloweesAsync(int followerId);
         Task<int> CreateFollowAsync(Follow follow);
@@ -31,12 +31,12 @@ namespace Poteto.Infrastructure.Data
             if (unitOfWork == null)
                 throw new ArgumentNullException(nameof(unitOfWork));
 
-            _connection = unitOfWork.Transaction.Connection;
-            _transaction = unitOfWork.Transaction;
+            _connection = unitOfWork.Transaction.Connection ?? throw new InvalidOperationException("Connection is null");
+            _transaction = unitOfWork.Transaction ?? throw new InvalidOperationException("Transaction is null");
         }
 
         // 指定のフォロワーとフォロー対象の関係を取得
-        public async Task<Follow> GetFollowAsync(int followerId, int followeeId)
+        public async Task<Follow?> GetFollowAsync(int followerId, int followeeId)
         {
             string sql = "SELECT * FROM Follows WHERE FollowerId = :FollowerId AND FolloweeId = :FolloweeId";
             return await _connection.QueryFirstOrDefaultAsync<Follow>(

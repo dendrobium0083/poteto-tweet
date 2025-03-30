@@ -12,7 +12,7 @@ namespace Poteto.Infrastructure.Data
     // Tweet に対する DB 操作を抽象化するインターフェース
     public interface ITweetRepository
     {
-        Task<Tweet> GetTweetByIdAsync(int tweetId);
+        Task<Tweet?> GetTweetByIdAsync(int tweetId);
         Task<IEnumerable<Tweet>> GetTweetsByUserIdAsync(int userId);
         Task<int> CreateTweetAsync(Tweet tweet);
         Task UpdateTweetAsync(Tweet tweet);
@@ -30,12 +30,12 @@ namespace Poteto.Infrastructure.Data
             if (unitOfWork == null)
                 throw new ArgumentNullException(nameof(unitOfWork));
 
-            _connection = unitOfWork.Transaction.Connection;
-            _transaction = unitOfWork.Transaction;
+            _connection = unitOfWork.Transaction.Connection ?? throw new InvalidOperationException("Connection is null");
+            _transaction = unitOfWork.Transaction ?? throw new InvalidOperationException("Transaction is null");
         }
 
         // TweetId によるツイートの取得
-        public async Task<Tweet> GetTweetByIdAsync(int tweetId)
+        public async Task<Tweet?> GetTweetByIdAsync(int tweetId)
         {
             string sql = "SELECT * FROM Tweets WHERE TweetId = :TweetId";
             return await _connection.QueryFirstOrDefaultAsync<Tweet>(

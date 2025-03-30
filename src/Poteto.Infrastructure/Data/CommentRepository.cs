@@ -12,7 +12,7 @@ namespace Poteto.Infrastructure.Data
     // Comment に対する DB 操作を抽象化するインターフェース
     public interface ICommentRepository
     {
-        Task<Comment> GetCommentByIdAsync(int commentId);
+        Task<Comment?> GetCommentByIdAsync(int commentId);
         Task<IEnumerable<Comment>> GetCommentsByTweetIdAsync(int tweetId);
         Task<int> CreateCommentAsync(Comment comment);
         Task UpdateCommentAsync(Comment comment);
@@ -30,12 +30,12 @@ namespace Poteto.Infrastructure.Data
             if (unitOfWork == null)
                 throw new ArgumentNullException(nameof(unitOfWork));
 
-            _connection = unitOfWork.Transaction.Connection;
-            _transaction = unitOfWork.Transaction;
+            _connection = unitOfWork.Transaction.Connection ?? throw new InvalidOperationException("Connection is null");
+            _transaction = unitOfWork.Transaction ?? throw new InvalidOperationException("Transaction is null");
         }
 
         // CommentId によるコメントの取得
-        public async Task<Comment> GetCommentByIdAsync(int commentId)
+        public async Task<Comment?> GetCommentByIdAsync(int commentId)
         {
             string sql = "SELECT * FROM Comments WHERE CommentId = :CommentId";
             return await _connection.QueryFirstOrDefaultAsync<Comment>(

@@ -8,13 +8,13 @@ namespace Poteto.Domain.Entities
         public int UserId { get; private set; }
 
         // ユーザ名（ユニーク）
-        public string UserName { get; private set; }
+        public string? UserName { get; private set; }
 
         // メールアドレス（ユニーク）
-        public string Email { get; private set; }
+        public string? Email { get; private set; }
 
         // ハッシュ化されたパスワード
-        public string PasswordHash { get; private set; }
+        public string? PasswordHash { get; private set; }
 
         // 作成日時（UTC）
         public DateTime CreatedAt { get; private set; }

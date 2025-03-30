@@ -12,7 +12,7 @@ namespace Poteto.Infrastructure.Data
     // Like に対する DB 操作を抽象化するインターフェース
     public interface ILikeRepository
     {
-        Task<Like> GetLikeAsync(int tweetId, int userId);
+        Task<Like?> GetLikeAsync(int tweetId, int userId);
         Task<IEnumerable<Like>> GetLikesByTweetIdAsync(int tweetId);
         Task<int> CreateLikeAsync(Like like);
         Task DeleteLikeAsync(int tweetId, int userId);
@@ -30,12 +30,12 @@ namespace Poteto.Infrastructure.Data
             if (unitOfWork == null)
                 throw new ArgumentNullException(nameof(unitOfWork));
 
-            _connection = unitOfWork.Transaction.Connection;
-            _transaction = unitOfWork.Transaction;
+            _connection = unitOfWork.Transaction.Connection ?? throw new InvalidOperationException("Connection is null");
+            _transaction = unitOfWork.Transaction ?? throw new InvalidOperationException("Transaction is null");
         }
 
         // 指定のツイートとユーザの Like 関係を取得
-        public async Task<Like> GetLikeAsync(int tweetId, int userId)
+        public async Task<Like?> GetLikeAsync(int tweetId, int userId)
         {
             string sql = "SELECT * FROM Likes WHERE TweetId = :TweetId AND UserId = :UserId";
             return await _connection.QueryFirstOrDefaultAsync<Like>(
