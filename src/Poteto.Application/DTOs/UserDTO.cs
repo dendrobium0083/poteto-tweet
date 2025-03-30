@@ -23,7 +23,7 @@ namespace Poteto.Application.DTOs
         public string Email { get; set; }
 
         /// <summary>
-        /// ユーザ登録日時（UTC）
+        /// ユーザ登録日時
         /// </summary>
         public DateTime CreatedAt { get; set; }
     }

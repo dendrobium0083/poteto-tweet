@@ -24,17 +24,17 @@ namespace Poteto.Application.DTOs
         public string Content { get; set; }
 
         /// <summary>
-        /// ツイートの作成日時（UTC）
+        /// ツイートの作成日時
         /// </summary>
         public DateTime CreatedAt { get; set; }
 
         /// <summary>
-        /// ツイートの更新日時（UTC、更新時のみ設定）
+        /// ツイートの更新日時（更新時のみ設定）
         /// </summary>
         public DateTime? UpdatedAt { get; set; }
 
         /// <summary>
-        /// ツイートに対するコメントの一覧（必要に応じて）
+        /// ツイートに対するコメントの一覧
         /// </summary>
         public IEnumerable<CommentDTO> Comments { get; set; }
     }

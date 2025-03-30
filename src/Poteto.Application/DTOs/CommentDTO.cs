@@ -28,12 +28,12 @@ namespace Poteto.Application.DTOs
         public string Content { get; set; }
         
         /// <summary>
-        /// コメントの作成日時（UTC）
+        /// コメントの作成日時
         /// </summary>
         public DateTime CreatedAt { get; set; }
         
         /// <summary>
-        /// コメントの更新日時（UTC、更新時のみ設定）
+        /// コメントの更新日時（更新時のみ設定）
         /// </summary>
         public DateTime? UpdatedAt { get; set; }
     }

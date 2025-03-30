@@ -23,7 +23,7 @@ namespace Poteto.Application.DTOs
         public int FolloweeId { get; set; }
         
         /// <summary>
-        /// フォロー登録日時（UTC）
+        /// フォロー登録日時
         /// </summary>
         public DateTime CreatedAt { get; set; }
     }

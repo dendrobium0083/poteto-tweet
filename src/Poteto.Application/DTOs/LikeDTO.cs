@@ -23,7 +23,7 @@ namespace Poteto.Application.DTOs
         public int UserId { get; set; }
         
         /// <summary>
-        /// いいね登録日時（UTC）
+        /// いいね登録日時
         /// </summary>
         public DateTime CreatedAt { get; set; }
     }
