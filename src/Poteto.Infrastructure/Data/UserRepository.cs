@@ -1,7 +1,9 @@
-using System;
+﻿using System;
 using System.Data;
 using System.Threading.Tasks;
+
 using Dapper;
+
 using Poteto.Domain.Entities;
 
 namespace Poteto.Infrastructure.Data
@@ -37,8 +39,8 @@ namespace Poteto.Infrastructure.Data
         {
             string sql = "SELECT * FROM Users WHERE UserId = :UserId";
             return await _connection.QueryFirstOrDefaultAsync<User>(
-                sql, 
-                new { UserId = userId }, 
+                sql,
+                new { UserId = userId },
                 _transaction
             );
         }
@@ -48,8 +50,8 @@ namespace Poteto.Infrastructure.Data
         {
             string sql = "SELECT * FROM Users WHERE Email = :Email";
             return await _connection.QueryFirstOrDefaultAsync<User>(
-                sql, 
-                new { Email = email }, 
+                sql,
+                new { Email = email },
                 _transaction
             );
         }

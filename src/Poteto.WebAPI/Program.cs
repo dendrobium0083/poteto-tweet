@@ -1,7 +1,8 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
+
 using Poteto.Application.Interfaces;
 using Poteto.Application.Services;
 using Poteto.Domain.DomainServices;
@@ -9,6 +10,7 @@ using Poteto.Infrastructure.Configurations;
 using Poteto.Infrastructure.Data;
 using Poteto.Infrastructure.Logging;
 using Poteto.WebAPI.Middleware;
+
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -1,5 +1,7 @@
+﻿using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+
 using Poteto.Application.DTOs;
 using Poteto.Application.Interfaces;
 
@@ -65,7 +67,7 @@ namespace Poteto.WebAPI.Controllers
         /// 対象のツイートID
         /// </summary>
         public int TweetId { get; set; }
-        
+
         /// <summary>
         /// いいねを行ったユーザのID
         /// </summary>

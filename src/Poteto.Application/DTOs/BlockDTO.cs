@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace Poteto.Application.DTOs
 {
@@ -11,17 +11,17 @@ namespace Poteto.Application.DTOs
         /// ブロック関係の一意な識別子
         /// </summary>
         public int BlockId { get; set; }
-        
+
         /// <summary>
         /// ブロックを行ったユーザのID
         /// </summary>
         public int BlockerId { get; set; }
-        
+
         /// <summary>
         /// ブロック対象のユーザのID
         /// </summary>
         public int BlockedId { get; set; }
-        
+
         /// <summary>
         /// ブロック登録日時（UTC）
         /// </summary>

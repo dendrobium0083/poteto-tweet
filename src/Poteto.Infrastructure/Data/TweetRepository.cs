@@ -1,8 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+
 using Dapper;
+
 using Poteto.Domain.Entities;
 
 namespace Poteto.Infrastructure.Data
@@ -27,7 +29,7 @@ namespace Poteto.Infrastructure.Data
         {
             if (unitOfWork == null)
                 throw new ArgumentNullException(nameof(unitOfWork));
-            
+
             _connection = unitOfWork.Transaction.Connection;
             _transaction = unitOfWork.Transaction;
         }
@@ -37,8 +39,8 @@ namespace Poteto.Infrastructure.Data
         {
             string sql = "SELECT * FROM Tweets WHERE TweetId = :TweetId";
             return await _connection.QueryFirstOrDefaultAsync<Tweet>(
-                sql, 
-                new { TweetId = tweetId }, 
+                sql,
+                new { TweetId = tweetId },
                 _transaction
             );
         }
@@ -48,8 +50,8 @@ namespace Poteto.Infrastructure.Data
         {
             string sql = "SELECT * FROM Tweets WHERE UserId = :UserId ORDER BY CreatedAt DESC";
             return await _connection.QueryAsync<Tweet>(
-                sql, 
-                new { UserId = userId }, 
+                sql,
+                new { UserId = userId },
                 _transaction
             );
         }

@@ -1,7 +1,9 @@
-using Microsoft.AspNetCore.Http;
-using Serilog;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Http;
+
+using Serilog;
 
 namespace Poteto.WebAPI.Middleware
 {
@@ -29,7 +31,7 @@ namespace Poteto.WebAPI.Middleware
             stopwatch.Stop();
 
             // レスポンス情報と実行時間のログ出力
-            Log.Information("Finished handling request: {StatusCode} in {ElapsedMilliseconds} ms", 
+            Log.Information("Finished handling request: {StatusCode} in {ElapsedMilliseconds} ms",
                 context.Response.StatusCode, stopwatch.ElapsedMilliseconds);
         }
     }

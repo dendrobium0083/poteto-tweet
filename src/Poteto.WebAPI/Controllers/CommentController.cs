@@ -1,5 +1,7 @@
+﻿using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+
 using Poteto.Application.DTOs;
 using Poteto.Application.Interfaces;
 
@@ -10,12 +12,12 @@ namespace Poteto.WebAPI.Controllers
     public class CommentController : ControllerBase
     {
         private readonly ICommentService _commentService;
-        
+
         public CommentController(ICommentService commentService)
         {
             _commentService = commentService;
         }
-        
+
         /// <summary>
         /// 新規コメント投稿のエンドポイント
         /// </summary>
@@ -28,11 +30,11 @@ namespace Poteto.WebAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
-            
+
             var commentDto = await _commentService.CreateCommentAsync(request.TweetId, request.UserId, request.Content);
             return CreatedAtAction(nameof(GetCommentById), new { id = commentDto.CommentId }, commentDto);
         }
-        
+
         /// <summary>
         /// コメントID を指定してコメント情報を取得するエンドポイント
         /// </summary>
@@ -48,7 +50,7 @@ namespace Poteto.WebAPI.Controllers
             }
             return Ok(commentDto);
         }
-        
+
         /// <summary>
         /// 指定したツイートに対する全コメント一覧を取得するエンドポイント
         /// </summary>
@@ -60,7 +62,7 @@ namespace Poteto.WebAPI.Controllers
             var commentDtos = await _commentService.GetCommentsByTweetIdAsync(tweetId);
             return Ok(commentDtos);
         }
-        
+
         /// <summary>
         /// コメントの内容を更新するエンドポイント
         /// </summary>
@@ -73,12 +75,12 @@ namespace Poteto.WebAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
-            
+
             await _commentService.UpdateCommentAsync(id, request.NewContent);
             return NoContent();
         }
     }
-    
+
     /// <summary>
     /// コメント投稿用のリクエストDTO
     /// </summary>
@@ -88,18 +90,18 @@ namespace Poteto.WebAPI.Controllers
         /// 対象ツイートのID
         /// </summary>
         public int TweetId { get; set; }
-        
+
         /// <summary>
         /// コメント投稿者のユーザID
         /// </summary>
         public int UserId { get; set; }
-        
+
         /// <summary>
         /// コメント内容
         /// </summary>
         public string Content { get; set; }
     }
-    
+
     /// <summary>
     /// コメント更新用のリクエストDTO
     /// </summary>

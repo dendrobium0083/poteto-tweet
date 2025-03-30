@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+
 using Poteto.Domain.Entities;
 
 namespace Poteto.Domain.DomainServices
@@ -16,7 +17,7 @@ namespace Poteto.Domain.DomainServices
             if (content.Length > 280)
                 throw new ArgumentException("ツイート内容は280文字以内で入力してください。", nameof(content));
         }
-        
+
         /// <summary>
         /// ツイートがスパムとみなされるかを判定します。（例: 単純なチェック）
         /// </summary>
@@ -26,11 +27,11 @@ namespace Poteto.Domain.DomainServices
         {
             if (tweet == null)
                 throw new ArgumentNullException(nameof(tweet));
-            
+
             // 例として、ツイート内容に「spam」という文字列が含まれていればスパムと判定する簡易ロジック
             return tweet.Content.IndexOf("spam", StringComparison.OrdinalIgnoreCase) >= 0;
         }
-        
+
         /// <summary>
         /// ツイート内容の更新処理に対するビジネスルールを適用します。
         /// 例: ツイート作成後一定時間を過ぎたツイートは更新不可とする。
@@ -44,7 +45,7 @@ namespace Poteto.Domain.DomainServices
 
             // 新しい内容のバリデーション
             ValidateTweetContent(newContent);
-            
+
             // 例: ツイート作成から15分以上経過している場合は更新を許可しない
             TimeSpan updateWindow = TimeSpan.FromMinutes(15);
             if (DateTime.UtcNow - tweet.CreatedAt > updateWindow)

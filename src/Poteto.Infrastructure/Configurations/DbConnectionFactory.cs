@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Data;
+
 using Oracle.ManagedDataAccess.Client;
 
 namespace Poteto.Infrastructure.Configurations

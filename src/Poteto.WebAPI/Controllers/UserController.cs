@@ -1,5 +1,7 @@
+﻿using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+
 using Poteto.Application.DTOs;
 using Poteto.Application.Interfaces;
 
@@ -10,12 +12,12 @@ namespace Poteto.WebAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        
+
         public UserController(IUserService userService)
         {
             _userService = userService;
         }
-        
+
         /// <summary>
         /// 新規ユーザ登録のエンドポイント
         /// </summary>
@@ -28,12 +30,12 @@ namespace Poteto.WebAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
-            
+
             var userDto = await _userService.RegisterUserAsync(request.UserName, request.Email, request.Password);
             // 作成されたリソースを示す CreatedAtAction を利用
             return CreatedAtAction(nameof(GetById), new { id = userDto.UserId }, userDto);
         }
-        
+
         /// <summary>
         /// ユーザ認証のエンドポイント
         /// </summary>
@@ -46,7 +48,7 @@ namespace Poteto.WebAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
-            
+
             var userDto = await _userService.AuthenticateUserAsync(request.Email, request.Password);
             if (userDto == null)
             {
@@ -54,7 +56,7 @@ namespace Poteto.WebAPI.Controllers
             }
             return Ok(userDto);
         }
-        
+
         /// <summary>
         /// 指定したユーザID のユーザ情報を取得するエンドポイント
         /// </summary>
@@ -71,7 +73,7 @@ namespace Poteto.WebAPI.Controllers
             return Ok(userDto);
         }
     }
-    
+
     // ユーザ登録用のリクエスト DTO
     public class RegisterUserRequest
     {
@@ -79,18 +81,18 @@ namespace Poteto.WebAPI.Controllers
         /// ユーザ名（必須）
         /// </summary>
         public string UserName { get; set; }
-        
+
         /// <summary>
         /// メールアドレス（必須）
         /// </summary>
         public string Email { get; set; }
-        
+
         /// <summary>
         /// 平文パスワード（必須）
         /// </summary>
         public string Password { get; set; }
     }
-    
+
     // ユーザ認証用のリクエスト DTO
     public class AuthenticateUserRequest
     {
@@ -98,7 +100,7 @@ namespace Poteto.WebAPI.Controllers
         /// メールアドレス（必須）
         /// </summary>
         public string Email { get; set; }
-        
+
         /// <summary>
         /// 平文パスワード（必須）
         /// </summary>

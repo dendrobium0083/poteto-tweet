@@ -1,8 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+
 using Dapper;
+
 using Poteto.Domain.Entities;
 
 namespace Poteto.Infrastructure.Data

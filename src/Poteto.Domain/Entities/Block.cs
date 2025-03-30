@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace Poteto.Domain.Entities
 {
@@ -6,13 +6,13 @@ namespace Poteto.Domain.Entities
     {
         // ブロック関係の一意な識別子
         public int BlockId { get; private set; }
-        
+
         // ブロックを行うユーザのID
         public int BlockerId { get; private set; }
-        
+
         // ブロック対象のユーザのID
         public int BlockedId { get; private set; }
-        
+
         // ブロック登録日時（UTC）
         public DateTime CreatedAt { get; private set; }
 

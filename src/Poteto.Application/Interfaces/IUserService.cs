@@ -1,4 +1,5 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+
 using Poteto.Application.DTOs;
 
 namespace Poteto.Application.Interfaces

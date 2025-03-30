@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace Poteto.Domain.Entities
 {
@@ -6,19 +6,19 @@ namespace Poteto.Domain.Entities
     {
         // ユーザの一意な識別子
         public int UserId { get; private set; }
-        
+
         // ユーザ名（ユニーク）
         public string UserName { get; private set; }
-        
+
         // メールアドレス（ユニーク）
         public string Email { get; private set; }
-        
+
         // ハッシュ化されたパスワード
         public string PasswordHash { get; private set; }
-        
+
         // 作成日時（UTC）
         public DateTime CreatedAt { get; private set; }
-        
+
         // 更新日時（UTC, 更新時のみ設定）
         public DateTime? UpdatedAt { get; private set; }
 
@@ -41,7 +41,7 @@ namespace Poteto.Domain.Entities
             {
                 throw new ArgumentException("新しいパスワードのハッシュは必須です。", nameof(newPasswordHash));
             }
-            
+
             PasswordHash = newPasswordHash;
             UpdatedAt = DateTime.UtcNow;
         }
@@ -53,7 +53,7 @@ namespace Poteto.Domain.Entities
             {
                 throw new ArgumentException("新しいユーザ名は必須です。", nameof(newUserName));
             }
-            
+
             UserName = newUserName;
             UpdatedAt = DateTime.UtcNow;
         }

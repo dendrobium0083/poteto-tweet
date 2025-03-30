@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Data;
+
 using Poteto.Infrastructure.Configurations;
 
 namespace Poteto.Infrastructure.Data

@@ -1,6 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Mvc;
+
 using Poteto.Application.DTOs;
 using Poteto.Application.Interfaces;
 
@@ -83,7 +85,7 @@ namespace Poteto.WebAPI.Controllers
         /// ツイート投稿者のユーザID
         /// </summary>
         public int UserId { get; set; }
-        
+
         /// <summary>
         /// ツイートの内容
         /// </summary>

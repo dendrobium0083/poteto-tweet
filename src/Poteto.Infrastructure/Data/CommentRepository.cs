@@ -1,8 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+
 using Dapper;
+
 using Poteto.Domain.Entities;
 
 namespace Poteto.Infrastructure.Data
@@ -27,7 +29,7 @@ namespace Poteto.Infrastructure.Data
         {
             if (unitOfWork == null)
                 throw new ArgumentNullException(nameof(unitOfWork));
-            
+
             _connection = unitOfWork.Transaction.Connection;
             _transaction = unitOfWork.Transaction;
         }

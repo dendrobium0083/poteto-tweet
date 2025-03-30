@@ -1,11 +1,12 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Poteto.Application.DTOs;
 using Poteto.Application.Interfaces;
-using Poteto.Domain.Entities;
 using Poteto.Domain.DomainServices;
+using Poteto.Domain.Entities;
 using Poteto.Infrastructure.Data;
 
 namespace Poteto.Application.Services
