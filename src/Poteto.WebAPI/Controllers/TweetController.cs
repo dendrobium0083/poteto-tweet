@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using Poteto.Application.DTOs;
 using Poteto.Application.Interfaces.Services;
+using Poteto.Application.Requests;
 
 namespace Poteto.WebAPI.Controllers
 {
@@ -74,32 +75,5 @@ namespace Poteto.WebAPI.Controllers
             await _tweetService.UpdateTweetAsync(id, request.NewContent);
             return NoContent();
         }
-    }
-
-    /// <summary>
-    /// ツイート投稿用のリクエストDTO
-    /// </summary>
-    public class CreateTweetRequest
-    {
-        /// <summary>
-        /// ツイート投稿者のユーザID
-        /// </summary>
-        public int UserId { get; set; }
-
-        /// <summary>
-        /// ツイートの内容
-        /// </summary>
-        public required string Content { get; set; }
-    }
-
-    /// <summary>
-    /// ツイート更新用のリクエストDTO
-    /// </summary>
-    public class UpdateTweetRequest
-    {
-        /// <summary>
-        /// 新しいツイート内容
-        /// </summary>
-        public required string NewContent { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using Poteto.Application.DTOs;
 using Poteto.Application.Interfaces.Services;
+using Poteto.Application.Requests;
 
 namespace Poteto.WebAPI.Controllers
 {
@@ -79,37 +80,5 @@ namespace Poteto.WebAPI.Controllers
             await _commentService.UpdateCommentAsync(id, request.NewContent);
             return NoContent();
         }
-    }
-
-    /// <summary>
-    /// コメント投稿用のリクエストDTO
-    /// </summary>
-    public class CreateCommentRequest
-    {
-        /// <summary>
-        /// 対象ツイートのID
-        /// </summary>
-        public int TweetId { get; set; }
-
-        /// <summary>
-        /// コメント投稿者のユーザID
-        /// </summary>
-        public int UserId { get; set; }
-
-        /// <summary>
-        /// コメント内容
-        /// </summary>
-        public required string Content { get; set; }
-    }
-
-    /// <summary>
-    /// コメント更新用のリクエストDTO
-    /// </summary>
-    public class UpdateCommentRequest
-    {
-        /// <summary>
-        /// 新しいコメント内容
-        /// </summary>
-        public required string NewContent { get; set; }
     }
 }

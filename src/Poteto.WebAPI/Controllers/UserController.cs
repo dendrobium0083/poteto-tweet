@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using Poteto.Application.DTOs;
 using Poteto.Application.Interfaces.Services;
+using Poteto.Application.Requests;
 
 namespace Poteto.WebAPI.Controllers
 {
@@ -72,38 +73,5 @@ namespace Poteto.WebAPI.Controllers
             }
             return Ok(userDto);
         }
-    }
-
-    // ユーザ登録用のリクエスト DTO
-    public class RegisterUserRequest
-    {
-        /// <summary>
-        /// ユーザ名（必須）
-        /// </summary>
-        public required string UserName { get; set; }
-
-        /// <summary>
-        /// メールアドレス（必須）
-        /// </summary>
-        public required string Email { get; set; }
-
-        /// <summary>
-        /// 平文パスワード（必須）
-        /// </summary>
-        public required string Password { get; set; }
-    }
-
-    // ユーザ認証用のリクエスト DTO
-    public class AuthenticateUserRequest
-    {
-        /// <summary>
-        /// メールアドレス（必須）
-        /// </summary>
-        public required string Email { get; set; }
-
-        /// <summary>
-        /// 平文パスワード（必須）
-        /// </summary>
-        public required string Password { get; set; }
     }
 }

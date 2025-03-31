@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using Poteto.Application.DTOs;
 using Poteto.Application.Interfaces.Services;
+using Poteto.Application.Requests;
 
 namespace Poteto.WebAPI.Controllers
 {
@@ -56,21 +57,5 @@ namespace Poteto.WebAPI.Controllers
             await _blockService.DeleteBlockAsync(blockerId, blockedId);
             return NoContent();
         }
-    }
-
-    /// <summary>
-    /// ブロック登録用のリクエストDTO
-    /// </summary>
-    public class CreateBlockRequest
-    {
-        /// <summary>
-        /// ブロックを行うユーザのID
-        /// </summary>
-        public int BlockerId { get; set; }
-
-        /// <summary>
-        /// ブロック対象のユーザのID
-        /// </summary>
-        public int BlockedId { get; set; }
     }
 }
