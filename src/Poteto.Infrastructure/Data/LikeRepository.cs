@@ -6,17 +6,10 @@ using System.Threading.Tasks;
 using Dapper;
 
 using Poteto.Domain.Entities;
+using Poteto.Application.Interfaces.Repositories;
 
 namespace Poteto.Infrastructure.Data
 {
-    // Like に対する DB 操作を抽象化するインターフェース
-    public interface ILikeRepository
-    {
-        Task<Like?> GetLikeAsync(int tweetId, int userId);
-        Task<IEnumerable<Like>> GetLikesByTweetIdAsync(int tweetId);
-        Task<int> CreateLikeAsync(Like like);
-        Task DeleteLikeAsync(int tweetId, int userId);
-    }
 
     // Dapper を用いた LikeRepository の実装
     public class LikeRepository : ILikeRepository

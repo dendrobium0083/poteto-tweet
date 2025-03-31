@@ -6,18 +6,10 @@ using System.Threading.Tasks;
 using Dapper;
 
 using Poteto.Domain.Entities;
+using Poteto.Application.Interfaces.Repositories;
 
 namespace Poteto.Infrastructure.Data
 {
-    // Tweet に対する DB 操作を抽象化するインターフェース
-    public interface ITweetRepository
-    {
-        Task<Tweet?> GetTweetByIdAsync(int tweetId);
-        Task<IEnumerable<Tweet>> GetTweetsByUserIdAsync(int userId);
-        Task<int> CreateTweetAsync(Tweet tweet);
-        Task UpdateTweetAsync(Tweet tweet);
-    }
-
     // Dapper を用いた TweetRepository の実装
     public class TweetRepository : ITweetRepository
     {

@@ -2,7 +2,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Poteto.Domain\Poteto.Domain.csproj" />
-    <ProjectReference Include="..\Poteto.Infrastructure\Poteto.Infrastructure.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -6,18 +6,10 @@ using System.Threading.Tasks;
 using Dapper;
 
 using Poteto.Domain.Entities;
+using Poteto.Application.Interfaces.Repositories;
 
 namespace Poteto.Infrastructure.Data
 {
-    // Comment に対する DB 操作を抽象化するインターフェース
-    public interface ICommentRepository
-    {
-        Task<Comment?> GetCommentByIdAsync(int commentId);
-        Task<IEnumerable<Comment>> GetCommentsByTweetIdAsync(int tweetId);
-        Task<int> CreateCommentAsync(Comment comment);
-        Task UpdateCommentAsync(Comment comment);
-    }
-
     // Dapper を用いた CommentRepository の実装
     public class CommentRepository : ICommentRepository
     {

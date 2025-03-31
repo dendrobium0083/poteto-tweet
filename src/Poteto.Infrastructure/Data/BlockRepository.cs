@@ -6,18 +6,10 @@ using System.Threading.Tasks;
 using Dapper;
 
 using Poteto.Domain.Entities;
+using Poteto.Application.Interfaces.Repositories;
 
 namespace Poteto.Infrastructure.Data
 {
-    // Block に対する DB 操作を抽象化するインターフェース
-    public interface IBlockRepository
-    {
-        Task<Block?> GetBlockAsync(int blockerId, int blockedId);
-        Task<IEnumerable<Block>> GetBlocksByBlockerIdAsync(int blockerId);
-        Task<int> CreateBlockAsync(Block block);
-        Task DeleteBlockAsync(int blockerId, int blockedId);
-    }
-
     // Dapper を利用した BlockRepository の実装
     public class BlockRepository : IBlockRepository
     {

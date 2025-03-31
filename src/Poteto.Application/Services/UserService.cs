@@ -5,7 +5,7 @@ using Poteto.Application.DTOs;
 using Poteto.Application.Interfaces.Services;
 using Poteto.Domain.Entities;
 using Poteto.Domain.ValueObjects;
-using Poteto.Infrastructure.Data;
+using Poteto.Application.Interfaces.Repositories;
 
 namespace Poteto.Application.Services
 {
@@ -54,13 +54,13 @@ namespace Poteto.Application.Services
         /// ユーザ認証を行い、認証されたユーザ情報の DTO を返します。
         /// 認証に失敗した場合は null を返します。
         /// </summary>
-        public async Task<UserDTO> AuthenticateUserAsync(string email, string password)
+        public async Task<UserDTO?> AuthenticateUserAsync(string email, string password)
         {
             // メールアドレスでユーザ取得
             var user = await _userRepository.GetUserByEmailAsync(email);
             if (user == null)
             {
-                return null;
+                throw new InvalidOperationException("Block data could not be found after creation.");
             }
 
             // 入力されたパスワードをハッシュ化し、保存されたハッシュ値と比較
@@ -88,7 +88,7 @@ namespace Poteto.Application.Services
             var user = await _userRepository.GetUserByIdAsync(userId);
             if (user == null)
             {
-                return null;
+                throw new InvalidOperationException("Block data could not be found after creation.");
             }
 
             return new UserDTO

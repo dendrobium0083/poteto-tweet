@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Poteto.Application.DTOs;
 using Poteto.Application.Interfaces.Services;
 using Poteto.Domain.Entities;
-using Poteto.Infrastructure.Data;
+using Poteto.Application.Interfaces.Repositories;
 
 namespace Poteto.Application.Services
 {

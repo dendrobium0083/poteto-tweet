@@ -7,7 +7,7 @@ using Poteto.Application.DTOs;
 using Poteto.Application.Interfaces.Services;
 using Poteto.Domain.DomainServices;
 using Poteto.Domain.Entities;
-using Poteto.Infrastructure.Data;
+using Poteto.Application.Interfaces.Repositories;
 
 namespace Poteto.Application.Services
 {
@@ -38,7 +38,10 @@ namespace Poteto.Application.Services
 
             // 登録されたツイートの取得（または、tweet エンティティに tweetId を設定しても良い）
             tweet = await _tweetRepository.GetTweetByIdAsync(tweetId);
-
+            if (tweet == null)
+            {
+                throw new InvalidOperationException("Block data could not be found after creation.");
+            }
             // ドメインエンティティを DTO に変換して返却
             return new TweetDTO
             {
@@ -67,7 +70,7 @@ namespace Poteto.Application.Services
             var tweet = await _tweetRepository.GetTweetByIdAsync(tweetId);
             if (tweet == null)
             {
-                return null;
+                throw new InvalidOperationException("Block data could not be found after creation.");
             }
 
             return new TweetDTO

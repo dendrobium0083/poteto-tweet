@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Poteto.Application.DTOs;
 using Poteto.Application.Interfaces.Services;
 using Poteto.Domain.Entities;
-using Poteto.Infrastructure.Data;
+using Poteto.Application.Interfaces.Repositories;
 
 namespace Poteto.Application.Services
 {
@@ -60,7 +60,7 @@ namespace Poteto.Application.Services
             var comment = await _commentRepository.GetCommentByIdAsync(commentId);
             if (comment == null)
             {
-                return null;
+                throw new InvalidOperationException("Block data could not be found after creation.");
             }
 
             return new CommentDTO

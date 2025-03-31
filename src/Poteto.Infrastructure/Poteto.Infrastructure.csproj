@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Poteto.Domain\Poteto.Domain.csproj" />
+    <ProjectReference Include="..\Poteto.Application\Poteto.Application.csproj" />
   </ItemGroup>
 
 </Project>

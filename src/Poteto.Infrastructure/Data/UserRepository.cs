@@ -5,17 +5,10 @@ using System.Threading.Tasks;
 using Dapper;
 
 using Poteto.Domain.Entities;
+using Poteto.Application.Interfaces.Repositories;
 
 namespace Poteto.Infrastructure.Data
 {
-    // ユーザに対する DB 操作を抽象化するインターフェース
-    public interface IUserRepository
-    {
-        Task<User?> GetUserByIdAsync(int userId);
-        Task<User?> GetUserByEmailAsync(string email);
-        Task<int> CreateUserAsync(User user);
-        // 必要に応じて、Update や Delete なども定義
-    }
 
     // Dapper を用いたユーザリポジトリの実装
     public class UserRepository : IUserRepository

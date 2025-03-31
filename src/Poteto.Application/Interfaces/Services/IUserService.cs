@@ -24,7 +24,7 @@ namespace Poteto.Application.Interfaces.Services
         /// <param name="email">メールアドレス</param>
         /// <param name="password">平文パスワード</param>
         /// <returns>認証されたユーザ情報の DTO。認証に失敗した場合は null など</returns>
-        Task<UserDTO> AuthenticateUserAsync(string email, string password);
+        Task<UserDTO?> AuthenticateUserAsync(string email, string password);
 
         /// <summary>
         /// 指定したユーザ ID のユーザ情報を取得します。

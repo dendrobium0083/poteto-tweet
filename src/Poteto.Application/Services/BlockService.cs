@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Poteto.Application.DTOs;
 using Poteto.Application.Interfaces.Services;
 using Poteto.Domain.Entities;
-using Poteto.Infrastructure.Data;
+using Poteto.Application.Interfaces.Repositories;
 
 namespace Poteto.Application.Services
 {
@@ -32,6 +32,10 @@ namespace Poteto.Application.Services
 
             // 登録後のブロック情報を取得（または、生成したエンティティに blockId を設定してもよい）
             block = await _blockRepository.GetBlockAsync(blockerId, blockedId);
+            if (block == null)
+            {
+                throw new InvalidOperationException("Block data could not be found after creation.");
+            }
 
             // DTO への変換
             return new BlockDTO
