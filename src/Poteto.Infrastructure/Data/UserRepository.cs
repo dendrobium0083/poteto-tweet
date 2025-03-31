@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 
 using Dapper;
 
-using Poteto.Domain.Entities;
 using Poteto.Application.Interfaces.Repositories;
+using Poteto.Domain.Entities;
 
 namespace Poteto.Infrastructure.Data
 {

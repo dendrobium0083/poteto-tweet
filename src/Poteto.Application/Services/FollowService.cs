@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Poteto.Application.DTOs;
+using Poteto.Application.Interfaces.Repositories;
 using Poteto.Application.Interfaces.Services;
 using Poteto.Domain.Entities;
-using Poteto.Application.Interfaces.Repositories;
 
 namespace Poteto.Application.Services
 {

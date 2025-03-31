@@ -1,5 +1,6 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using Poteto.Domain.Entities;
 
 namespace Poteto.Application.Interfaces.Repositories

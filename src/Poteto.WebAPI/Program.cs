@@ -3,8 +3,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-using Poteto.Application.Interfaces.Services;
 using Poteto.Application.Interfaces.Repositories;
+using Poteto.Application.Interfaces.Services;
 using Poteto.Application.Services;
 using Poteto.Domain.DomainServices;
 using Poteto.Infrastructure.Configurations;

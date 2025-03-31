@@ -1,4 +1,4 @@
-namespace Poteto.Application.Requests
+﻿namespace Poteto.Application.Requests
 {
     /// <summary>
     /// ブロック登録用のリクエストDTO

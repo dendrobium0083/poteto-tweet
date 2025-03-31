@@ -1,4 +1,4 @@
-namespace Poteto.Application.Requests
+﻿namespace Poteto.Application.Requests
 {
     /// <summary>
     /// ユーザ登録用のリクエスト DTO
