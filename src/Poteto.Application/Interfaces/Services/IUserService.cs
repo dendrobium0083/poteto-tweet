@@ -2,7 +2,7 @@
 
 using Poteto.Application.DTOs;
 
-namespace Poteto.Application.Interfaces
+namespace Poteto.Application.Interfaces.Services
 {
     /// <summary>
     /// ユーザに関するユースケースを定義するインターフェース

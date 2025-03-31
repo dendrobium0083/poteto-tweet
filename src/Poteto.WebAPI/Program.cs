@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-using Poteto.Application.Interfaces;
+using Poteto.Application.Interfaces.Services;
 using Poteto.Application.Services;
 using Poteto.Domain.DomainServices;
 using Poteto.Infrastructure.Configurations;
@@ -16,7 +16,11 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 // appsettings.json から接続文字列を取得
-string connectionString = builder.Configuration.GetConnectionString("OracleConnection");
+string? connectionString = builder.Configuration.GetConnectionString("OracleConnection");
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException("OracleConnection の接続文字列が設定されていません。");
+}
 
 // Serilog の設定（環境に応じたログ出力の設定例）
 var environment = builder.Environment.EnvironmentName;

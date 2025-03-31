@@ -3,7 +3,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using Poteto.Application.DTOs;
-using Poteto.Application.Interfaces;
+using Poteto.Application.Interfaces.Services;
 
 namespace Poteto.WebAPI.Controllers
 {
@@ -99,7 +99,7 @@ namespace Poteto.WebAPI.Controllers
         /// <summary>
         /// コメント内容
         /// </summary>
-        public string Content { get; set; }
+        public required string Content { get; set; }
     }
 
     /// <summary>
@@ -110,6 +110,6 @@ namespace Poteto.WebAPI.Controllers
         /// <summary>
         /// 新しいコメント内容
         /// </summary>
-        public string NewContent { get; set; }
+        public required string NewContent { get; set; }
     }
 }

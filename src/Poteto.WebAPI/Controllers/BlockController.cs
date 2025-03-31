@@ -3,7 +3,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using Poteto.Application.DTOs;
-using Poteto.Application.Interfaces;
+using Poteto.Application.Interfaces.Services;
 
 namespace Poteto.WebAPI.Controllers
 {

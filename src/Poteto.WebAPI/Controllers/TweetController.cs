@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 using Poteto.Application.DTOs;
-using Poteto.Application.Interfaces;
+using Poteto.Application.Interfaces.Services;
 
 namespace Poteto.WebAPI.Controllers
 {
@@ -89,7 +89,7 @@ namespace Poteto.WebAPI.Controllers
         /// <summary>
         /// ツイートの内容
         /// </summary>
-        public string Content { get; set; }
+        public required string Content { get; set; }
     }
 
     /// <summary>
@@ -100,6 +100,6 @@ namespace Poteto.WebAPI.Controllers
         /// <summary>
         /// 新しいツイート内容
         /// </summary>
-        public string NewContent { get; set; }
+        public required string NewContent { get; set; }
     }
 }

@@ -3,7 +3,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using Poteto.Application.DTOs;
-using Poteto.Application.Interfaces;
+using Poteto.Application.Interfaces.Services;
 
 namespace Poteto.WebAPI.Controllers
 {
@@ -80,17 +80,17 @@ namespace Poteto.WebAPI.Controllers
         /// <summary>
         /// ユーザ名（必須）
         /// </summary>
-        public string UserName { get; set; }
+        public required string UserName { get; set; }
 
         /// <summary>
         /// メールアドレス（必須）
         /// </summary>
-        public string Email { get; set; }
+        public required string Email { get; set; }
 
         /// <summary>
         /// 平文パスワード（必須）
         /// </summary>
-        public string Password { get; set; }
+        public required string Password { get; set; }
     }
 
     // ユーザ認証用のリクエスト DTO
@@ -99,11 +99,11 @@ namespace Poteto.WebAPI.Controllers
         /// <summary>
         /// メールアドレス（必須）
         /// </summary>
-        public string Email { get; set; }
+        public required string Email { get; set; }
 
         /// <summary>
         /// 平文パスワード（必須）
         /// </summary>
-        public string Password { get; set; }
+        public required string Password { get; set; }
     }
 }

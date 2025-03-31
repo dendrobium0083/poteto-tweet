@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 using Poteto.Application.DTOs;
 
-namespace Poteto.Application.Interfaces
+namespace Poteto.Application.Interfaces.Services
 {
     /// <summary>
     /// ユーザ間のブロック操作に関するユースケースを定義するインターフェース

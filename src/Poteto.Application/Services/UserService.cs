@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 
 using Poteto.Application.DTOs;
-using Poteto.Application.Interfaces;
+using Poteto.Application.Interfaces.Services;
 using Poteto.Domain.Entities;
 using Poteto.Domain.ValueObjects;
 using Poteto.Infrastructure.Data;
