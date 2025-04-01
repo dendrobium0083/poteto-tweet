@@ -1,76 +1,48 @@
-﻿using System;
-using System.Data;
-using System.Threading.Tasks;
-
+﻿using System.Data;
 using Dapper;
-
 using Poteto.Application.Interfaces.Repositories;
 using Poteto.Domain.Entities;
 
 namespace Poteto.Infrastructure.Data
 {
-
-    // Dapper を用いたユーザリポジトリの実装
     public class UserRepository : IUserRepository
     {
-        private readonly IDbConnection _connection;
-        private readonly IDbTransaction _transaction;
-
-        // IUnitOfWork から接続およびトランザクションを取得
-        public UserRepository(IUnitOfWork unitOfWork)
+        public async Task<int> CreateUserAsync(IDbConnection connection, IDbTransaction transaction, User user)
         {
-            if (unitOfWork == null)
-                throw new ArgumentNullException(nameof(unitOfWork));
-
-            // トランザクションから接続を取得
-            _connection = unitOfWork.Transaction.Connection ?? throw new InvalidOperationException("Connection is null");
-            _transaction = unitOfWork.Transaction ?? throw new InvalidOperationException("Transaction is null");
-        }
-
-        // ユーザIDでユーザ情報を取得する
-        public async Task<User?> GetUserByIdAsync(int userId)
-        {
-            string sql = "SELECT * FROM Users WHERE UserId = :UserId";
-            return await _connection.QueryFirstOrDefaultAsync<User>(
-                sql,
-                new { UserId = userId },
-                _transaction
-            );
-        }
-
-        // メールアドレスでユーザ情報を取得する
-        public async Task<User?> GetUserByEmailAsync(string email)
-        {
-            string sql = "SELECT * FROM Users WHERE Email = :Email";
-            return await _connection.QueryFirstOrDefaultAsync<User>(
-                sql,
-                new { Email = email },
-                _transaction
-            );
-        }
-
-        // 新規ユーザを登録し、生成された UserId を返す
-        public async Task<int> CreateUserAsync(User user)
-        {
-            if (user == null)
-                throw new ArgumentNullException(nameof(user));
-
-            // Oracle では INSERT 文に RETURNING 句を利用して ID を取得可能
-            string sql = @"
+            var sql = @"
                 INSERT INTO Users (UserName, Email, PasswordHash, CreatedAt)
                 VALUES (:UserName, :Email, :PasswordHash, :CreatedAt)
                 RETURNING UserId INTO :UserId";
 
             var parameters = new DynamicParameters();
-            parameters.Add("UserName", user.UserName, DbType.String, size: 50);
-            parameters.Add("Email", user.Email, DbType.String, size: 100);
-            parameters.Add("PasswordHash", user.PasswordHash, DbType.String, size: 256);
-            parameters.Add("CreatedAt", user.CreatedAt, DbType.DateTime);
-            parameters.Add("UserId", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parameters.Add(":UserName", user.UserName);
+            parameters.Add(":Email", user.Email);
+            parameters.Add(":PasswordHash", user.PasswordHash);
+            parameters.Add(":CreatedAt", user.CreatedAt);
+            parameters.Add(":UserId", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-            await _connection.ExecuteAsync(sql, parameters, _transaction);
+            await connection.ExecuteAsync(sql, parameters, transaction);
+            return parameters.Get<int>(":UserId");
+        }
 
-            return parameters.Get<int>("UserId");
+        public async Task<User?> GetUserByIdAsync(IDbConnection connection, IDbTransaction transaction, int userId)
+        {
+            var sql = @"
+                SELECT UserId, UserName, Email, PasswordHash, CreatedAt
+                FROM Users
+                WHERE UserId = :UserId";
+
+            return await connection.QueryFirstOrDefaultAsync<User>(sql, new { UserId = userId }, transaction);
+        }
+
+        public async Task<User?> GetUserByEmailAsync(IDbConnection connection, string email)
+        {
+            var sql = @"
+                SELECT UserId, UserName, Email, PasswordHash, CreatedAt
+                FROM Users
+                WHERE Email = :Email";
+
+            return await connection.QueryFirstOrDefaultAsync<User>(sql, new { Email = email });
         }
     }
 }

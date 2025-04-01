@@ -1,16 +1,23 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-
+﻿using System.Data;
 using Poteto.Domain.Entities;
 
 namespace Poteto.Application.Interfaces.Repositories
 {
-    // ユーザに対する DB 操作を抽象化するインターフェース
     public interface IUserRepository
     {
-        Task<User?> GetUserByIdAsync(int userId);
-        Task<User?> GetUserByEmailAsync(string email);
-        Task<int> CreateUserAsync(User user);
-        // 必要に応じて、Update や Delete なども定義
+        /// <summary>
+        /// ユーザを新規登録し、採番された UserId を返します。
+        /// </summary>
+        Task<int> CreateUserAsync(IDbConnection connection, IDbTransaction transaction, User user);
+
+        /// <summary>
+        /// 指定した UserId のユーザを取得します（トランザクション付き）。
+        /// </summary>
+        Task<User?> GetUserByIdAsync(IDbConnection connection, IDbTransaction transaction, int userId);
+
+        /// <summary>
+        /// メールアドレスでユーザを検索します（読み取り専用）。
+        /// </summary>
+        Task<User?> GetUserByEmailAsync(IDbConnection connection, string email);
     }
 }

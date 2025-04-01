@@ -1,10 +1,8 @@
-﻿using System.Threading.Tasks;
-
-using Microsoft.AspNetCore.Mvc;
-
-using Poteto.Application.DTOs;
+﻿using Microsoft.AspNetCore.Mvc;
 using Poteto.Application.Interfaces.Services;
-using Poteto.Application.Requests;
+using Poteto.Application.DTOs;
+using Poteto.Infrastructure.Configurations;
+using System.Data;
 
 namespace Poteto.WebAPI.Controllers
 {
@@ -13,65 +11,68 @@ namespace Poteto.WebAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly DbConnectionFactory _dbConnectionFactory;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, DbConnectionFactory dbConnectionFactory)
         {
             _userService = userService;
+            _dbConnectionFactory = dbConnectionFactory;
         }
 
-        /// <summary>
-        /// 新規ユーザ登録のエンドポイント
-        /// </summary>
-        /// <param name="request">登録に必要なユーザ情報</param>
-        /// <returns>登録されたユーザ情報の DTO</returns>
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterUserRequest request)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            using var connection = _dbConnectionFactory.CreateConnection();
 
-            var userDto = await _userService.RegisterUserAsync(request.UserName, request.Email, request.Password);
-            // 作成されたリソースを示す CreatedAtAction を利用
-            return CreatedAtAction(nameof(GetById), new { id = userDto.UserId }, userDto);
-        }
+            var userDto = await _userService.RegisterUserAsync(
+                request.UserName,
+                request.Email,
+                request.Password,
+                connection
+            );
 
-        /// <summary>
-        /// ユーザ認証のエンドポイント
-        /// </summary>
-        /// <param name="request">認証に必要なメールアドレスとパスワード</param>
-        /// <returns>認証に成功したユーザ情報の DTO。失敗時は Unauthorized を返す。</returns>
-        [HttpPost("authenticate")]
-        public async Task<IActionResult> Authenticate([FromBody] AuthenticateUserRequest request)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var userDto = await _userService.AuthenticateUserAsync(request.Email, request.Password);
-            if (userDto == null)
-            {
-                return Unauthorized();
-            }
             return Ok(userDto);
         }
 
-        /// <summary>
-        /// 指定したユーザID のユーザ情報を取得するエンドポイント
-        /// </summary>
-        /// <param name="id">ユーザの一意な識別子</param>
-        /// <returns>ユーザ情報の DTO</returns>
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            var userDto = await _userService.GetUserByIdAsync(id);
+            using var connection = _dbConnectionFactory.CreateConnection();
+
+            var userDto = await _userService.AuthenticateUserAsync(
+                request.Email,
+                request.Password,
+                connection
+            );
+
             if (userDto == null)
             {
-                return NotFound();
+                return Unauthorized("認証に失敗しました。");
             }
+
             return Ok(userDto);
         }
+
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetUser(int userId)
+        {
+            using var connection = _dbConnectionFactory.CreateConnection();
+
+            var userDto = await _userService.GetUserByIdAsync(userId, connection);
+            return Ok(userDto);
+        }
+    }
+
+    public class RegisterRequest
+    {
+        public string UserName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
+
+    public class LoginRequest
+    {
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
     }
 }
