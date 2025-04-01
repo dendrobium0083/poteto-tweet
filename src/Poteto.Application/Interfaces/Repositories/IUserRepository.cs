@@ -13,7 +13,7 @@ namespace Poteto.Application.Interfaces.Repositories
         /// <summary>
         /// 指定した UserId のユーザを取得します（トランザクション付き）。
         /// </summary>
-        Task<User?> GetUserByIdAsync(IDbConnection connection, IDbTransaction transaction, int userId);
+        Task<User?> GetUserByIdAsync(IDbConnection connection, int userId);
 
         /// <summary>
         /// メールアドレスでユーザを検索します（読み取り専用）。

@@ -25,14 +25,14 @@ namespace Poteto.Infrastructure.Data
             return parameters.Get<int>(":UserId");
         }
 
-        public async Task<User?> GetUserByIdAsync(IDbConnection connection, IDbTransaction transaction, int userId)
+        public async Task<User?> GetUserByIdAsync(IDbConnection connection, int userId)
         {
             var sql = @"
                 SELECT UserId, UserName, Email, PasswordHash, CreatedAt
                 FROM Users
                 WHERE UserId = :UserId";
 
-            return await connection.QueryFirstOrDefaultAsync<User>(sql, new { UserId = userId }, transaction);
+            return await connection.QueryFirstOrDefaultAsync<User>(sql, new { UserId = userId });
         }
 
         public async Task<User?> GetUserByEmailAsync(IDbConnection connection, string email)

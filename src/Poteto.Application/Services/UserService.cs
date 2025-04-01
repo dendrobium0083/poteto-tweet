@@ -32,15 +32,15 @@ namespace Poteto.Application.Services
                 var user = new User(userName, emailObj.Value, passwordObj.HashedValue);
 
                 int newUserId = await _userRepository.CreateUserAsync(connection, transaction, user);
-                var createdUser = await _userRepository.GetUserByIdAsync(connection, transaction, newUserId);
+                transaction.Commit();
 
+                var createdUser = await _userRepository.GetUserByIdAsync(connection, newUserId);
                 if (createdUser == null)
                 {
                     transaction.Rollback();
                     throw new InvalidOperationException("ユーザの登録に失敗しました。");
                 }
 
-                transaction.Commit();
 
                 return new UserDTO
                 {
@@ -89,7 +89,7 @@ namespace Poteto.Application.Services
         /// </summary>
         public async Task<UserDTO> GetUserByIdAsync(int userId, IDbConnection connection)
         {
-            var user = await _userRepository.GetUserByIdAsync(connection, transaction: null, userId);
+            var user = await _userRepository.GetUserByIdAsync(connection, userId);
             if (user == null)
             {
                 throw new InvalidOperationException("ユーザ情報が見つかりません。");
