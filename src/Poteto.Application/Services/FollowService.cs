@@ -40,9 +40,9 @@ namespace Poteto.Application.Services
             // DTO への変換
             return new FollowDTO
             {
-                FollowId = follow.FollowId,
+                Id = follow.FollowId,
                 FollowerId = follow.FollowerId,
-                FolloweeId = follow.FolloweeId,
+                FollowingId = follow.FolloweeId,
                 CreatedAt = follow.CreatedAt
             };
         }
@@ -57,9 +57,9 @@ namespace Poteto.Application.Services
             // 各フォロー関係を DTO に変換
             return followers.Select(f => new FollowDTO
             {
-                FollowId = f.FollowId,
+                Id = f.FollowId,
                 FollowerId = f.FollowerId,
-                FolloweeId = f.FolloweeId,
+                FollowingId = f.FolloweeId,
                 CreatedAt = f.CreatedAt
             });
         }
@@ -74,9 +74,9 @@ namespace Poteto.Application.Services
             // 各フォロー関係を DTO に変換
             return followees.Select(f => new FollowDTO
             {
-                FollowId = f.FollowId,
+                Id = f.FollowId,
                 FollowerId = f.FollowerId,
-                FolloweeId = f.FolloweeId,
+                FollowingId = f.FolloweeId,
                 CreatedAt = f.CreatedAt
             });
         }

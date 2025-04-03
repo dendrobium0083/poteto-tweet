@@ -40,7 +40,7 @@ namespace Poteto.Application.Services
             // DTO への変換
             return new LikeDTO
             {
-                LikeId = like.LikeId,
+                Id = like.LikeId,
                 TweetId = like.TweetId,
                 UserId = like.UserId,
                 CreatedAt = like.CreatedAt
@@ -57,7 +57,7 @@ namespace Poteto.Application.Services
             // 各いいね情報を DTO に変換して返却
             return likes.Select(like => new LikeDTO
             {
-                LikeId = like.LikeId,
+                Id = like.LikeId,
                 TweetId = like.TweetId,
                 UserId = like.UserId,
                 CreatedAt = like.CreatedAt

@@ -46,9 +46,9 @@ namespace Poteto.WebAPI.Controllers
                 }
 
                 var tweetDto = await _tweetService.CreateTweetAsync(request.UserId, request.Content);
-                _logger.LogInformation("ツイートが正常に作成されました: TweetId={TweetId}", tweetDto.TweetId);
+                _logger.LogInformation("ツイートが正常に作成されました: TweetId={Id}", tweetDto.Id);
 
-                return CreatedAtAction(nameof(GetTweetById), new { id = tweetDto.TweetId }, tweetDto);
+                return CreatedAtAction(nameof(GetTweetById), new { id = tweetDto.Id }, tweetDto);
             }
             catch (Exception ex)
             {
@@ -90,7 +90,7 @@ namespace Poteto.WebAPI.Controllers
                     return NotFound();
                 }
 
-                _logger.LogInformation("ツイートを正常に取得しました: TweetId={TweetId}", id);
+                _logger.LogInformation("ツイートを正常に取得しました: TweetId={Id}", id);
                 return Ok(tweetDto);
             }
             catch (Exception ex)

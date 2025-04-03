@@ -45,19 +45,19 @@ namespace Poteto.Application.Services
             // ドメインエンティティを DTO に変換して返却
             return new TweetDTO
             {
-                TweetId = tweet.TweetId,
+                Id = tweet.TweetId,
                 UserId = tweet.UserId,
                 Content = tweet.Content,
                 CreatedAt = tweet.CreatedAt,
-                UpdatedAt = tweet.UpdatedAt,
+                UpdatedAt = tweet.UpdatedAt ?? tweet.CreatedAt,
                 Comments = tweet.Comments?.Select(c => new CommentDTO
                 {
-                    CommentId = c.CommentId,
+                    Id = c.CommentId,
                     TweetId = c.TweetId,
                     UserId = c.UserId,
                     Content = c.Content,
                     CreatedAt = c.CreatedAt,
-                    UpdatedAt = c.UpdatedAt
+                    UpdatedAt = c.UpdatedAt ?? c.CreatedAt
                 })
             };
         }
@@ -75,19 +75,19 @@ namespace Poteto.Application.Services
 
             return new TweetDTO
             {
-                TweetId = tweet.TweetId,
+                Id = tweet.TweetId,
                 UserId = tweet.UserId,
                 Content = tweet.Content,
                 CreatedAt = tweet.CreatedAt,
-                UpdatedAt = tweet.UpdatedAt,
+                UpdatedAt = tweet.UpdatedAt ?? tweet.CreatedAt,
                 Comments = tweet.Comments?.Select(c => new CommentDTO
                 {
-                    CommentId = c.CommentId,
+                    Id = c.CommentId,
                     TweetId = c.TweetId,
                     UserId = c.UserId,
                     Content = c.Content,
                     CreatedAt = c.CreatedAt,
-                    UpdatedAt = c.UpdatedAt
+                    UpdatedAt = c.UpdatedAt ?? c.CreatedAt
                 })
             };
         }
@@ -102,19 +102,19 @@ namespace Poteto.Application.Services
             // 各ツイートを DTO に変換
             return tweets.Select(tweet => new TweetDTO
             {
-                TweetId = tweet.TweetId,
+                Id = tweet.TweetId,
                 UserId = tweet.UserId,
                 Content = tweet.Content,
                 CreatedAt = tweet.CreatedAt,
-                UpdatedAt = tweet.UpdatedAt,
+                UpdatedAt = tweet.UpdatedAt ?? tweet.CreatedAt,
                 Comments = tweet.Comments?.Select(c => new CommentDTO
                 {
-                    CommentId = c.CommentId,
+                    Id = c.CommentId,
                     TweetId = c.TweetId,
                     UserId = c.UserId,
                     Content = c.Content,
                     CreatedAt = c.CreatedAt,
-                    UpdatedAt = c.UpdatedAt
+                    UpdatedAt = c.UpdatedAt ?? c.CreatedAt
                 })
             });
         }

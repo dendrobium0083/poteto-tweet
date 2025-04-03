@@ -42,8 +42,8 @@ namespace Poteto.Application.Services
 
                 return new UserDTO
                 {
-                    UserId = createdUser.Id,
-                    UserName = createdUser.Username,
+                    Id = createdUser.Id,
+                    Username = createdUser.Username,
                     Email = createdUser.Email,
                     CreatedAt = createdUser.CreatedAt
                 };
@@ -75,8 +75,8 @@ namespace Poteto.Application.Services
 
             return new UserDTO
             {
-                UserId = user.Id,
-                UserName = user.Username,
+                Id = user.Id,
+                Username = user.Username,
                 Email = user.Email,
                 CreatedAt = user.CreatedAt
             };
@@ -95,8 +95,8 @@ namespace Poteto.Application.Services
 
             return new UserDTO
             {
-                UserId = user.Id,
-                UserName = user.Username,
+                Id = user.Id,
+                Username = user.Username,
                 Email = user.Email,
                 CreatedAt = user.CreatedAt
             };

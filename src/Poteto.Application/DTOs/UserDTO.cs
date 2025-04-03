@@ -1,30 +1,37 @@
-﻿using System;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Poteto.Application.DTOs
 {
     /// <summary>
-    /// ユーザ情報を転送するためのデータ転送オブジェクト
+    /// ユーザー情報のDTO
     /// </summary>
     public class UserDTO
     {
         /// <summary>
-        /// ユーザの一意な識別子
+        /// ユーザーID
         /// </summary>
-        public int UserId { get; set; }
+        [Required]
+        public int Id { get; set; }
 
         /// <summary>
-        /// ユーザ名（ユニーク）
+        /// ユーザー名
         /// </summary>
-        public string? UserName { get; set; }
+        [Required]
+        [StringLength(50, MinimumLength = 1)]
+        public string Username { get; set; } = string.Empty;
 
         /// <summary>
-        /// ユーザのメールアドレス
+        /// メールアドレス
         /// </summary>
-        public string? Email { get; set; }
+        [Required]
+        [EmailAddress]
+        [StringLength(255)]
+        public string Email { get; set; } = string.Empty;
 
         /// <summary>
-        /// ユーザ登録日時
+        /// 作成日時
         /// </summary>
+        [Required]
         public DateTime CreatedAt { get; set; }
     }
 }

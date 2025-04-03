@@ -1,30 +1,42 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Poteto.Application.DTOs
 {
     /// <summary>
-    /// いいね情報を転送するためのデータ転送オブジェクト
+    /// いいね情報のDTO
     /// </summary>
     public class LikeDTO
     {
         /// <summary>
-        /// いいねの一意な識別子
+        /// いいねID
         /// </summary>
-        public int LikeId { get; set; }
+        [Required]
+        public int Id { get; set; }
 
         /// <summary>
-        /// 対象のツイートID
+        /// ツイートID
         /// </summary>
+        [Required]
         public int TweetId { get; set; }
 
         /// <summary>
-        /// いいねを行ったユーザのID
+        /// ユーザーID
         /// </summary>
+        [Required]
         public int UserId { get; set; }
 
         /// <summary>
-        /// いいね登録日時
+        /// ユーザー名
         /// </summary>
+        [Required]
+        [StringLength(50)]
+        public string Username { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 作成日時
+        /// </summary>
+        [Required]
         public DateTime CreatedAt { get; set; }
     }
 }

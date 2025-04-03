@@ -46,7 +46,7 @@ namespace Poteto.WebAPI.Controllers
                 }
 
                 var likeDto = await _likeService.CreateLikeAsync(request.TweetId, request.UserId);
-                _logger.LogInformation("いいねが正常に作成されました: LikeId={LikeId}", likeDto.LikeId);
+                _logger.LogInformation("いいねが正常に作成されました: LikeId={Id}", likeDto.Id);
 
                 return CreatedAtAction(nameof(GetLikesByTweetId), new { tweetId = likeDto.TweetId }, likeDto);
             }

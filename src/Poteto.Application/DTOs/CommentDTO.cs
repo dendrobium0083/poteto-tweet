@@ -1,40 +1,55 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Poteto.Application.DTOs
 {
     /// <summary>
-    /// コメント情報を転送するためのデータ転送オブジェクト
+    /// コメント情報のDTO
     /// </summary>
     public class CommentDTO
     {
         /// <summary>
-        /// コメントの一意な識別子
+        /// コメントID
         /// </summary>
-        public int CommentId { get; set; }
+        [Required]
+        public int Id { get; set; }
 
         /// <summary>
-        /// 対象のツイートID
+        /// ツイートID
         /// </summary>
+        [Required]
         public int TweetId { get; set; }
 
         /// <summary>
-        /// コメント投稿者のユーザID
+        /// ユーザーID
         /// </summary>
+        [Required]
         public int UserId { get; set; }
 
         /// <summary>
-        /// コメントの内容
+        /// ユーザー名
         /// </summary>
-        public string? Content { get; set; }
+        [Required]
+        [StringLength(50)]
+        public string Username { get; set; } = string.Empty;
 
         /// <summary>
-        /// コメントの作成日時
+        /// コメント内容
         /// </summary>
+        [Required]
+        [StringLength(280, MinimumLength = 1)]
+        public string Content { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 作成日時
+        /// </summary>
+        [Required]
         public DateTime CreatedAt { get; set; }
 
         /// <summary>
-        /// コメントの更新日時（更新時のみ設定）
+        /// 更新日時
         /// </summary>
-        public DateTime? UpdatedAt { get; set; }
+        [Required]
+        public DateTime UpdatedAt { get; set; }
     }
 }

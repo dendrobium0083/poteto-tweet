@@ -43,12 +43,12 @@ namespace Poteto.Application.Services
             // DTO への変換
             return new CommentDTO
             {
-                CommentId = comment.CommentId,
+                Id = comment.CommentId,
                 TweetId = comment.TweetId,
                 UserId = comment.UserId,
                 Content = comment.Content,
                 CreatedAt = comment.CreatedAt,
-                UpdatedAt = comment.UpdatedAt
+                UpdatedAt = comment.UpdatedAt ?? comment.CreatedAt
             };
         }
 
@@ -65,12 +65,12 @@ namespace Poteto.Application.Services
 
             return new CommentDTO
             {
-                CommentId = comment.CommentId,
+                Id = comment.CommentId,
                 TweetId = comment.TweetId,
                 UserId = comment.UserId,
                 Content = comment.Content,
                 CreatedAt = comment.CreatedAt,
-                UpdatedAt = comment.UpdatedAt
+                UpdatedAt = comment.UpdatedAt ?? comment.CreatedAt
             };
         }
 
@@ -83,12 +83,12 @@ namespace Poteto.Application.Services
 
             return comments.Select(comment => new CommentDTO
             {
-                CommentId = comment.CommentId,
+                Id = comment.CommentId,
                 TweetId = comment.TweetId,
                 UserId = comment.UserId,
                 Content = comment.Content,
                 CreatedAt = comment.CreatedAt,
-                UpdatedAt = comment.UpdatedAt
+                UpdatedAt = comment.UpdatedAt ?? comment.CreatedAt
             });
         }
 

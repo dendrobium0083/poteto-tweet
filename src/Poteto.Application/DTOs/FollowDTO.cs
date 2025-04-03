@@ -1,30 +1,49 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Poteto.Application.DTOs
 {
     /// <summary>
-    /// フォロー情報を転送するためのデータ転送オブジェクト
+    /// フォロー情報のDTO
     /// </summary>
     public class FollowDTO
     {
         /// <summary>
-        /// フォロー関係の一意な識別子
+        /// フォローID
         /// </summary>
-        public int FollowId { get; set; }
+        [Required]
+        public int Id { get; set; }
 
         /// <summary>
-        /// フォローを行うユーザのID
+        /// フォロワーID（フォローするユーザー）
         /// </summary>
+        [Required]
         public int FollowerId { get; set; }
 
         /// <summary>
-        /// フォロー対象のユーザのID
+        /// フォロワー名
         /// </summary>
-        public int FolloweeId { get; set; }
+        [Required]
+        [StringLength(50)]
+        public string FollowerUsername { get; set; } = string.Empty;
 
         /// <summary>
-        /// フォロー登録日時
+        /// フォロー対象ID（フォローされるユーザー）
         /// </summary>
+        [Required]
+        public int FollowingId { get; set; }
+
+        /// <summary>
+        /// フォロー対象名
+        /// </summary>
+        [Required]
+        [StringLength(50)]
+        public string FollowingUsername { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 作成日時
+        /// </summary>
+        [Required]
         public DateTime CreatedAt { get; set; }
     }
 }

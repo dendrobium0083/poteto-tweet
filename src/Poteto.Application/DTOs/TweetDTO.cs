@@ -1,37 +1,63 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Poteto.Application.DTOs
 {
     /// <summary>
-    /// ツイート情報を転送するためのデータ転送オブジェクト
+    /// ツイート情報のDTO
     /// </summary>
     public class TweetDTO
     {
         /// <summary>
-        /// ツイートの一意な識別子
+        /// ツイートID
         /// </summary>
-        public int TweetId { get; set; }
+        [Required]
+        public int Id { get; set; }
 
         /// <summary>
-        /// ツイート投稿者のユーザID
+        /// ユーザーID
         /// </summary>
+        [Required]
         public int UserId { get; set; }
 
         /// <summary>
-        /// ツイートの内容
+        /// ユーザー名
         /// </summary>
-        public string? Content { get; set; }
+        [Required]
+        [StringLength(50)]
+        public string Username { get; set; } = string.Empty;
 
         /// <summary>
-        /// ツイートの作成日時
+        /// ツイート内容
         /// </summary>
+        [Required]
+        [StringLength(280, MinimumLength = 1)]
+        public string Content { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 作成日時
+        /// </summary>
+        [Required]
         public DateTime CreatedAt { get; set; }
 
         /// <summary>
-        /// ツイートの更新日時（更新時のみ設定）
+        /// 更新日時
         /// </summary>
-        public DateTime? UpdatedAt { get; set; }
+        [Required]
+        public DateTime UpdatedAt { get; set; }
+
+        /// <summary>
+        /// いいね数
+        /// </summary>
+        [Required]
+        public int LikeCount { get; set; }
+
+        /// <summary>
+        /// コメント数
+        /// </summary>
+        [Required]
+        public int CommentCount { get; set; }
 
         /// <summary>
         /// ツイートに対するコメントの一覧

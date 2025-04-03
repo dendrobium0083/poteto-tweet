@@ -60,7 +60,7 @@ namespace Poteto.WebAPI.Controllers
                     connection
                 );
 
-                _logger.LogInformation("ユーザーが正常に登録されました: UserId={UserId}", userDto.UserId);
+                _logger.LogInformation("ユーザーが正常に登録されました: UserId={Id}", userDto.Id);
                 return Ok(userDto);
             }
             catch (Exception ex)
@@ -111,7 +111,7 @@ namespace Poteto.WebAPI.Controllers
                     return Unauthorized("認証に失敗しました。");
                 }
 
-                _logger.LogInformation("ログインが成功しました: UserId={UserId}", userDto.UserId);
+                _logger.LogInformation("ログインが成功しました: UserId={Id}", userDto.Id);
                 return Ok(userDto);
             }
             catch (Exception ex)
@@ -156,7 +156,7 @@ namespace Poteto.WebAPI.Controllers
                     return NotFound();
                 }
 
-                _logger.LogInformation("ユーザー情報を正常に取得しました: UserId={UserId}", userId);
+                _logger.LogInformation("ユーザー情報を正常に取得しました: UserId={Id}", userId);
                 return Ok(userDto);
             }
             catch (Exception ex)

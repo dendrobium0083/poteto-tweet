@@ -46,9 +46,9 @@ namespace Poteto.WebAPI.Controllers
                 }
 
                 var commentDto = await _commentService.CreateCommentAsync(request.TweetId, request.UserId, request.Content);
-                _logger.LogInformation("コメントが正常に作成されました: CommentId={CommentId}", commentDto.CommentId);
+                _logger.LogInformation("コメントが正常に作成されました: CommentId={Id}", commentDto.Id);
 
-                return CreatedAtAction(nameof(GetCommentById), new { id = commentDto.CommentId }, commentDto);
+                return CreatedAtAction(nameof(GetCommentById), new { id = commentDto.Id }, commentDto);
             }
             catch (Exception ex)
             {
@@ -91,7 +91,7 @@ namespace Poteto.WebAPI.Controllers
                     return NotFound();
                 }
 
-                _logger.LogInformation("コメントを正常に取得しました: CommentId={CommentId}", id);
+                _logger.LogInformation("コメントを正常に取得しました: CommentId={Id}", id);
                 return Ok(commentDto);
             }
             catch (Exception ex)

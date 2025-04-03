@@ -1,30 +1,49 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Poteto.Application.DTOs
 {
     /// <summary>
-    /// ブロック情報を転送するためのデータ転送オブジェクト
+    /// ブロック情報のDTO
     /// </summary>
     public class BlockDTO
     {
         /// <summary>
-        /// ブロック関係の一意な識別子
+        /// ブロックID
         /// </summary>
-        public int BlockId { get; set; }
+        [Required]
+        public int Id { get; set; }
 
         /// <summary>
-        /// ブロックを行ったユーザのID
+        /// ブロックするユーザーID
         /// </summary>
+        [Required]
         public int BlockerId { get; set; }
 
         /// <summary>
-        /// ブロック対象のユーザのID
+        /// ブロックするユーザー名
         /// </summary>
+        [Required]
+        [StringLength(50)]
+        public string BlockerUsername { get; set; } = string.Empty;
+
+        /// <summary>
+        /// ブロック対象のユーザーID
+        /// </summary>
+        [Required]
         public int BlockedId { get; set; }
 
         /// <summary>
-        /// ブロック登録日時（UTC）
+        /// ブロック対象のユーザー名
         /// </summary>
+        [Required]
+        [StringLength(50)]
+        public string BlockedUsername { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 作成日時
+        /// </summary>
+        [Required]
         public DateTime CreatedAt { get; set; }
     }
 }

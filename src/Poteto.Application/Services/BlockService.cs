@@ -40,7 +40,7 @@ namespace Poteto.Application.Services
             // DTO への変換
             return new BlockDTO
             {
-                BlockId = block.BlockId,
+                Id = block.BlockId,
                 BlockerId = block.BlockerId,
                 BlockedId = block.BlockedId,
                 CreatedAt = block.CreatedAt
@@ -55,7 +55,7 @@ namespace Poteto.Application.Services
             var blocks = await _blockRepository.GetBlocksByBlockerIdAsync(blockerId);
             return blocks.Select(b => new BlockDTO
             {
-                BlockId = b.BlockId,
+                Id = b.BlockId,
                 BlockerId = b.BlockerId,
                 BlockedId = b.BlockedId,
                 CreatedAt = b.CreatedAt
