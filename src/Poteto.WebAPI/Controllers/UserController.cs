@@ -4,6 +4,7 @@ using Poteto.Application.Interfaces.Services;
 using Poteto.Application.DTOs;
 using Poteto.Infrastructure.Configurations;
 using System.Data;
+using Poteto.WebAPI.Requests;
 
 namespace Poteto.WebAPI.Controllers
 {
