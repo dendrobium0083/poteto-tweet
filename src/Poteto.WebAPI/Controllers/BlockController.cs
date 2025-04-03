@@ -4,135 +4,150 @@ using Microsoft.Extensions.Logging;
 using Poteto.Application.DTOs;
 using Poteto.Application.Interfaces.Services;
 using Poteto.Application.Requests;
+using Poteto.WebAPI.Requests;
 
 namespace Poteto.WebAPI.Controllers
 {
+    /// <summary>
+    /// ブロック機能を提供するコントローラー
+    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
-    public class BlockController : ControllerBase
+    public class BlockController : BaseController<BlockController>
     {
         private readonly IBlockService _blockService;
-        private readonly ILogger<BlockController> _logger;
 
+        /// <summary>
+        /// BlockControllerの新しいインスタンスを初期化します
+        /// </summary>
+        /// <param name="blockService">ブロックサービス</param>
+        /// <param name="logger">ロガー</param>
+        /// <exception cref="ArgumentNullException">blockServiceまたはloggerがnullの場合</exception>
         public BlockController(IBlockService blockService, ILogger<BlockController> logger)
+            : base(logger)
         {
             _blockService = blockService ?? throw new ArgumentNullException(nameof(blockService));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
-        /// 新規ブロック登録のエンドポイント
+        /// 新しいブロックを作成します
         /// </summary>
-        /// <param name="request">ブロック登録用のリクエストDTO</param>
-        /// <returns>登録されたブロック情報のDTO</returns>
-        /// <response code="201">ブロックが正常に作成された場合</response>
-        /// <response code="400">リクエストが無効な場合</response>
-        /// <response code="500">サーバーエラーが発生した場合</response>
+        /// <param name="request">ブロック作成リクエスト</param>
+        /// <returns>作成されたブロック</returns>
+        /// <response code="200">ブロックの作成に成功</response>
+        /// <response code="400">リクエストが無効</response>
+        /// <response code="500">サーバーエラー</response>
         [HttpPost]
-        [ProducesResponseType(typeof(BlockDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateBlock([FromBody] CreateBlockRequest request)
+        public async Task<ActionResult<BlockDTO>> CreateBlock([FromBody] CreateBlockRequest request)
         {
             try
             {
-                _logger.LogInformation("ブロック作成リクエストを受信: BlockerId={BlockerId}, BlockedId={BlockedId}",
+                _logger.LogInformation("ブロック作成リクエスト開始: BlockerId={BlockerId}, BlockedId={BlockedId}",
                     request.BlockerId, request.BlockedId);
 
-                if (!ModelState.IsValid)
+                if (request.BlockerId <= 0 || request.BlockedId <= 0)
                 {
-                    _logger.LogWarning("無効なリクエスト: {ModelState}", ModelState);
-                    return BadRequest(ModelState);
+                    _logger.LogWarning("無効なIDが指定されました: BlockerId={BlockerId}, BlockedId={BlockedId}",
+                        request.BlockerId, request.BlockedId);
+                    return BadRequest(new { Message = "IDは正の値である必要があります" });
                 }
 
-                var blockDto = await _blockService.CreateBlockAsync(request.BlockerId, request.BlockedId);
-                _logger.LogInformation("ブロックが正常に作成されました: BlockId={BlockId}", blockDto.BlockId);
+                var result = await _blockService.CreateBlockAsync(request.BlockerId, request.BlockedId);
+                _logger.LogInformation("ブロック作成成功: BlockerId={BlockerId}, BlockedId={BlockedId}",
+                    request.BlockerId, request.BlockedId);
 
-                return CreatedAtAction(nameof(GetBlocksByBlockerId),
-                    new { blockerId = blockDto.BlockerId },
-                    blockDto);
+                return SuccessResponse(result);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "ブロック作成中にエラーが発生しました: BlockerId={BlockerId}, BlockedId={BlockedId}",
-                    request.BlockerId, request.BlockedId);
-                return StatusCode(StatusCodes.Status500InternalServerError, "ブロックの作成中にエラーが発生しました。");
+                return ErrorResponse(ex, "ブロックの作成中にエラーが発生しました");
             }
         }
 
         /// <summary>
-        /// 指定したユーザが行った全ブロック一覧を取得するエンドポイント
+        /// 指定されたユーザーがブロックしているユーザー一覧を取得します
         /// </summary>
-        /// <param name="blockerId">ブロックを行ったユーザのID</param>
-        /// <returns>ブロック情報のDTO一覧</returns>
-        /// <response code="200">ブロック一覧が正常に取得された場合</response>
-        /// <response code="400">リクエストが無効な場合</response>
-        /// <response code="500">サーバーエラーが発生した場合</response>
-        [HttpGet("blocker/{blockerId}")]
-        [ProducesResponseType(typeof(IEnumerable<BlockDTO>), StatusCodes.Status200OK)]
+        /// <param name="blockerId">ブロックしているユーザーのID</param>
+        /// <returns>ブロックしているユーザー一覧</returns>
+        /// <response code="200">ブロック一覧の取得に成功</response>
+        /// <response code="400">リクエストが無効</response>
+        /// <response code="404">ユーザーが見つからない</response>
+        /// <response code="500">サーバーエラー</response>
+        [HttpGet("{blockerId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetBlocksByBlockerId(int blockerId)
+        public async Task<ActionResult<IEnumerable<BlockDTO>>> GetBlocksByBlockerId(int blockerId)
         {
             try
             {
-                _logger.LogInformation("ブロック一覧取得リクエストを受信: BlockerId={BlockerId}", blockerId);
+                _logger.LogInformation("ブロック一覧取得リクエスト開始: BlockerId={BlockerId}", blockerId);
 
                 if (blockerId <= 0)
                 {
-                    _logger.LogWarning("無効なBlockerId: {BlockerId}", blockerId);
-                    return BadRequest("BlockerIdは正の値でなければなりません。");
+                    _logger.LogWarning("無効なIDが指定されました: BlockerId={BlockerId}", blockerId);
+                    return BadRequest(new { Message = "IDは正の値である必要があります" });
                 }
 
                 var blocks = await _blockService.GetBlocksByBlockerIdAsync(blockerId);
-                _logger.LogInformation("ブロック一覧を正常に取得しました: 件数={Count}", blocks.Count());
+                if (blocks == null || !blocks.Any())
+                {
+                    return NotFoundResponse("ブロック", blockerId);
+                }
 
-                return Ok(blocks);
+                _logger.LogInformation("ブロック一覧取得成功: BlockerId={BlockerId}, Count={Count}",
+                    blockerId, blocks.Count());
+
+                return SuccessResponse(blocks);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "ブロック一覧取得中にエラーが発生しました: BlockerId={BlockerId}", blockerId);
-                return StatusCode(StatusCodes.Status500InternalServerError, "ブロック一覧の取得中にエラーが発生しました。");
+                return ErrorResponse(ex, "ブロック一覧の取得中にエラーが発生しました");
             }
         }
 
         /// <summary>
-        /// 指定されたブロック関係を解除するエンドポイント
+        /// 指定されたブロックを削除します
         /// </summary>
-        /// <param name="blockerId">ブロックを行うユーザのID</param>
-        /// <param name="blockedId">ブロック解除する対象ユーザのID</param>
-        /// <response code="204">ブロックが正常に解除された場合</response>
-        /// <response code="400">リクエストが無効な場合</response>
-        /// <response code="500">サーバーエラーが発生した場合</response>
+        /// <param name="blockerId">ブロックしているユーザーのID</param>
+        /// <param name="blockedId">ブロックされているユーザーのID</param>
+        /// <returns>削除結果</returns>
+        /// <response code="200">ブロックの削除に成功</response>
+        /// <response code="400">リクエストが無効</response>
+        /// <response code="404">ブロックが見つからない</response>
+        /// <response code="500">サーバーエラー</response>
         [HttpDelete("{blockerId}/{blockedId}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteBlock(int blockerId, int blockedId)
+        public async Task<ActionResult> DeleteBlock(int blockerId, int blockedId)
         {
             try
             {
-                _logger.LogInformation("ブロック解除リクエストを受信: BlockerId={BlockerId}, BlockedId={BlockedId}",
+                _logger.LogInformation("ブロック削除リクエスト開始: BlockerId={BlockerId}, BlockedId={BlockedId}",
                     blockerId, blockedId);
 
                 if (blockerId <= 0 || blockedId <= 0)
                 {
-                    _logger.LogWarning("無効なID: BlockerId={BlockerId}, BlockedId={BlockedId}",
+                    _logger.LogWarning("無効なIDが指定されました: BlockerId={BlockerId}, BlockedId={BlockedId}",
                         blockerId, blockedId);
-                    return BadRequest("IDは正の値でなければなりません。");
+                    return BadRequest(new { Message = "IDは正の値である必要があります" });
                 }
 
                 await _blockService.DeleteBlockAsync(blockerId, blockedId);
-                _logger.LogInformation("ブロックが正常に解除されました: BlockerId={BlockerId}, BlockedId={BlockedId}",
+                _logger.LogInformation("ブロック削除成功: BlockerId={BlockerId}, BlockedId={BlockedId}",
                     blockerId, blockedId);
 
-                return NoContent();
+                return SuccessResponse();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "ブロック解除中にエラーが発生しました: BlockerId={BlockerId}, BlockedId={BlockedId}",
-                    blockerId, blockedId);
-                return StatusCode(StatusCodes.Status500InternalServerError, "ブロックの解除中にエラーが発生しました。");
+                return ErrorResponse(ex, "ブロックの削除中にエラーが発生しました");
             }
         }
     }
