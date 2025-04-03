@@ -1,48 +1,165 @@
-﻿using System.Data;
-using Dapper;
+﻿using System;
+using System.Data;
+using System.Threading.Tasks;
+
+using Microsoft.Extensions.Logging;
+
 using Poteto.Application.Interfaces.Repositories;
 using Poteto.Domain.Entities;
+using Poteto.Infrastructure.Configurations;
 
 namespace Poteto.Infrastructure.Data
 {
-    public class UserRepository : IUserRepository
+    /// <summary>
+    /// ユーザーリポジトリ
+    /// </summary>
+    public class UserRepository : BaseRepository, IUserRepository
     {
-        public async Task<int> CreateUserAsync(IDbConnection connection, IDbTransaction transaction, User user)
+        /// <summary>
+        /// UserRepositoryの新しいインスタンスを初期化します
+        /// </summary>
+        /// <param name="connectionFactory">データベース接続ファクトリ</param>
+        /// <param name="logger">ロガー</param>
+        public UserRepository(IDbConnectionFactory connectionFactory, ILogger<UserRepository> logger)
+            : base(connectionFactory, logger)
         {
-            var sql = @"
-                INSERT INTO Users (UserName, Email, PasswordHash, CreatedAt)
-                VALUES (:UserName, :Email, :PasswordHash, :CreatedAt)
-                RETURNING UserId INTO :UserId";
-
-            var parameters = new DynamicParameters();
-            parameters.Add(":UserName", user.UserName);
-            parameters.Add(":Email", user.Email);
-            parameters.Add(":PasswordHash", user.PasswordHash);
-            parameters.Add(":CreatedAt", user.CreatedAt);
-            parameters.Add(":UserId", dbType: DbType.Int32, direction: ParameterDirection.Output);
-
-            await connection.ExecuteAsync(sql, parameters, transaction);
-            return parameters.Get<int>(":UserId");
         }
 
-        public async Task<User?> GetUserByIdAsync(IDbConnection connection, int userId)
+        /// <summary>
+        /// ユーザーを取得します
+        /// </summary>
+        /// <param name="id">ユーザーID</param>
+        /// <returns>ユーザー</returns>
+        public async Task<User?> GetByIdAsync(int id)
         {
-            var sql = @"
-                SELECT UserId, UserName, Email, PasswordHash, CreatedAt
-                FROM Users
-                WHERE UserId = :UserId";
+            _logger.LogInformation("ユーザー取得開始: ID={Id}", id);
 
-            return await connection.QueryFirstOrDefaultAsync<User>(sql, new { UserId = userId });
+            return await ExecuteInTransactionAsync<User?>(async (connection, transaction) =>
+            {
+                const string sql = @"
+                    SELECT id, username, email, password_hash, created_at, updated_at
+                    FROM users
+                    WHERE id = :id";
+
+                using var command = connection.CreateCommand();
+                command.Transaction = transaction;
+                command.CommandText = sql;
+                command.AddParameter("id", id);
+
+                using var reader = await command.ExecuteReaderAsync();
+                if (!await reader.ReadAsync())
+                {
+                    return null;
+                }
+
+                return new User
+                {
+                    Id = reader.GetInt32(0),
+                    Username = reader.GetString(1),
+                    Email = reader.GetString(2),
+                    PasswordHash = reader.GetString(3),
+                    CreatedAt = reader.GetDateTime(4),
+                    UpdatedAt = reader.GetDateTime(5)
+                };
+            });
         }
 
-        public async Task<User?> GetUserByEmailAsync(IDbConnection connection, string email)
+        /// <summary>
+        /// ユーザーを作成します
+        /// </summary>
+        /// <param name="user">ユーザー</param>
+        /// <returns>作成されたユーザー</returns>
+        public async Task<User> CreateAsync(User user)
         {
-            var sql = @"
-                SELECT UserId, UserName, Email, PasswordHash, CreatedAt
-                FROM Users
-                WHERE Email = :Email";
+            _logger.LogInformation("ユーザー作成開始: Username={Username}, Email={Email}",
+                user.Username, user.Email);
 
-            return await connection.QueryFirstOrDefaultAsync<User>(sql, new { Email = email });
+            return await ExecuteInTransactionAsync<User>(async (connection, transaction) =>
+            {
+                const string sql = @"
+                    INSERT INTO users (username, email, password_hash, created_at, updated_at)
+                    VALUES (:username, :email, :password_hash, :created_at, :updated_at)
+                    RETURNING id INTO :id";
+
+                using var command = connection.CreateCommand();
+                command.Transaction = transaction;
+                command.CommandText = sql;
+
+                var idParameter = command.CreateParameter();
+                idParameter.ParameterName = "id";
+                idParameter.DbType = DbType.Int32;
+                idParameter.Direction = ParameterDirection.Output;
+                command.Parameters.Add(idParameter);
+
+                command.AddParameter("username", user.Username);
+                command.AddParameter("email", user.Email);
+                command.AddParameter("password_hash", user.PasswordHash);
+                command.AddParameter("created_at", user.CreatedAt);
+                command.AddParameter("updated_at", user.UpdatedAt);
+
+                await command.ExecuteNonQueryAsync();
+
+                user.Id = (int)idParameter.Value;
+                return user;
+            });
+        }
+
+        /// <summary>
+        /// ユーザーを更新します
+        /// </summary>
+        /// <param name="user">ユーザー</param>
+        /// <returns>更新されたユーザー</returns>
+        public async Task<User> UpdateAsync(User user)
+        {
+            _logger.LogInformation("ユーザー更新開始: ID={Id}, Username={Username}, Email={Email}",
+                user.Id, user.Username, user.Email);
+
+            return await ExecuteInTransactionAsync<User>(async (connection, transaction) =>
+            {
+                const string sql = @"
+                    UPDATE users
+                    SET username = :username,
+                        email = :email,
+                        password_hash = :password_hash,
+                        updated_at = :updated_at
+                    WHERE id = :id";
+
+                using var command = connection.CreateCommand();
+                command.Transaction = transaction;
+                command.CommandText = sql;
+
+                command.AddParameter("id", user.Id);
+                command.AddParameter("username", user.Username);
+                command.AddParameter("email", user.Email);
+                command.AddParameter("password_hash", user.PasswordHash);
+                command.AddParameter("updated_at", user.UpdatedAt);
+
+                await command.ExecuteNonQueryAsync();
+                return user;
+            });
+        }
+
+        /// <summary>
+        /// ユーザーを削除します
+        /// </summary>
+        /// <param name="id">ユーザーID</param>
+        /// <returns>削除が成功したかどうか</returns>
+        public async Task<bool> DeleteAsync(int id)
+        {
+            _logger.LogInformation("ユーザー削除開始: ID={Id}", id);
+
+            return await ExecuteInTransactionAsync<bool>(async (connection, transaction) =>
+            {
+                const string sql = "DELETE FROM users WHERE id = :id";
+
+                using var command = connection.CreateCommand();
+                command.Transaction = transaction;
+                command.CommandText = sql;
+                command.AddParameter("id", id);
+
+                var result = await command.ExecuteNonQueryAsync();
+                return result > 0;
+            });
         }
     }
 }

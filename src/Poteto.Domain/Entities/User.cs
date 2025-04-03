@@ -2,25 +2,40 @@
 
 namespace Poteto.Domain.Entities
 {
+    /// <summary>
+    /// ユーザーエンティティ
+    /// </summary>
     public class User
     {
-        // ユーザの一意な識別子
-        public int UserId { get; private set; }
+        /// <summary>
+        /// ユーザーID
+        /// </summary>
+        public int Id { get; set; }
 
-        // ユーザ名（ユニーク）
-        public string? UserName { get; private set; }
+        /// <summary>
+        /// ユーザー名
+        /// </summary>
+        public string Username { get; set; } = string.Empty;
 
-        // メールアドレス（ユニーク）
-        public string? Email { get; private set; }
+        /// <summary>
+        /// メールアドレス
+        /// </summary>
+        public string Email { get; set; } = string.Empty;
 
-        // ハッシュ化されたパスワード
-        public string? PasswordHash { get; private set; }
+        /// <summary>
+        /// パスワードハッシュ
+        /// </summary>
+        public string PasswordHash { get; set; } = string.Empty;
 
-        // 作成日時（UTC）
-        public DateTime CreatedAt { get; private set; }
+        /// <summary>
+        /// 作成日時
+        /// </summary>
+        public DateTime CreatedAt { get; set; }
 
-        // 更新日時（UTC, 更新時のみ設定）
-        public DateTime? UpdatedAt { get; private set; }
+        /// <summary>
+        /// 更新日時
+        /// </summary>
+        public DateTime UpdatedAt { get; set; }
 
         public User() { }
 
@@ -28,7 +43,7 @@ namespace Poteto.Domain.Entities
         public User(string userName, string email, string passwordHash)
         {
             // バリデーション処理など必要に応じて追加
-            UserName = userName ?? throw new ArgumentNullException(nameof(userName));
+            Username = userName ?? throw new ArgumentNullException(nameof(userName));
             Email = email ?? throw new ArgumentNullException(nameof(email));
             PasswordHash = passwordHash ?? throw new ArgumentNullException(nameof(passwordHash));
             CreatedAt = DateTime.UtcNow;
@@ -54,7 +69,7 @@ namespace Poteto.Domain.Entities
                 throw new ArgumentException("新しいユーザ名は必須です。", nameof(newUserName));
             }
 
-            UserName = newUserName;
+            Username = newUserName;
             UpdatedAt = DateTime.UtcNow;
         }
     }
