@@ -31,21 +31,19 @@ namespace Poteto.Application.Services
                 var passwordObj = new Password(password);
                 var user = new User(userName, emailObj.Value, passwordObj.HashedValue);
 
-                int newUserId = await _userRepository.CreateUserAsync(connection, transaction, user);
+                var createdUser = await _userRepository.CreateAsync(user);
                 transaction.Commit();
 
-                var createdUser = await _userRepository.GetUserByIdAsync(connection, newUserId);
                 if (createdUser == null)
                 {
                     transaction.Rollback();
                     throw new InvalidOperationException("ユーザの登録に失敗しました。");
                 }
 
-
                 return new UserDTO
                 {
-                    UserId = createdUser.UserId,
-                    UserName = createdUser.UserName,
+                    UserId = createdUser.Id,
+                    UserName = createdUser.Username,
                     Email = createdUser.Email,
                     CreatedAt = createdUser.CreatedAt
                 };
@@ -63,7 +61,7 @@ namespace Poteto.Application.Services
         /// </summary>
         public async Task<UserDTO?> AuthenticateUserAsync(string email, string password, IDbConnection connection)
         {
-            var user = await _userRepository.GetUserByEmailAsync(connection, email);
+            var user = await _userRepository.GetByEmailAsync(email);
             if (user == null)
             {
                 return null;
@@ -77,8 +75,8 @@ namespace Poteto.Application.Services
 
             return new UserDTO
             {
-                UserId = user.UserId,
-                UserName = user.UserName,
+                UserId = user.Id,
+                UserName = user.Username,
                 Email = user.Email,
                 CreatedAt = user.CreatedAt
             };
@@ -89,7 +87,7 @@ namespace Poteto.Application.Services
         /// </summary>
         public async Task<UserDTO> GetUserByIdAsync(int userId, IDbConnection connection)
         {
-            var user = await _userRepository.GetUserByIdAsync(connection, userId);
+            var user = await _userRepository.GetByIdAsync(userId);
             if (user == null)
             {
                 throw new InvalidOperationException("ユーザ情報が見つかりません。");
@@ -97,8 +95,8 @@ namespace Poteto.Application.Services
 
             return new UserDTO
             {
-                UserId = user.UserId,
-                UserName = user.UserName,
+                UserId = user.Id,
+                UserName = user.Username,
                 Email = user.Email,
                 CreatedAt = user.CreatedAt
             };

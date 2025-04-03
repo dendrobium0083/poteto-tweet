@@ -17,6 +17,13 @@ namespace Poteto.Application.Interfaces.Repositories
         Task<User?> GetByIdAsync(int id);
 
         /// <summary>
+        /// メールアドレスでユーザーを取得します
+        /// </summary>
+        /// <param name="email">メールアドレス</param>
+        /// <returns>ユーザー</returns>
+        Task<User?> GetByEmailAsync(string email);
+
+        /// <summary>
         /// ユーザーを作成します
         /// </summary>
         /// <param name="user">ユーザー</param>

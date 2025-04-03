@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Data.Common;
 using System.Threading.Tasks;
 
 using Microsoft.Extensions.Logging;
@@ -46,7 +47,46 @@ namespace Poteto.Infrastructure.Data
                 command.CommandText = sql;
                 command.AddParameter("id", id);
 
-                using var reader = await command.ExecuteReaderAsync();
+                using var reader = await ((DbCommand)command).ExecuteReaderAsync();
+                if (!await reader.ReadAsync())
+                {
+                    return null;
+                }
+
+                return new User
+                {
+                    Id = reader.GetInt32(0),
+                    Username = reader.GetString(1),
+                    Email = reader.GetString(2),
+                    PasswordHash = reader.GetString(3),
+                    CreatedAt = reader.GetDateTime(4),
+                    UpdatedAt = reader.GetDateTime(5)
+                };
+            });
+        }
+
+        /// <summary>
+        /// メールアドレスでユーザーを取得します
+        /// </summary>
+        /// <param name="email">メールアドレス</param>
+        /// <returns>ユーザー</returns>
+        public async Task<User?> GetByEmailAsync(string email)
+        {
+            _logger.LogInformation("ユーザー取得開始: Email={Email}", email);
+
+            return await ExecuteInTransactionAsync<User?>(async (connection, transaction) =>
+            {
+                const string sql = @"
+                    SELECT id, username, email, password_hash, created_at, updated_at
+                    FROM users
+                    WHERE email = :email";
+
+                using var command = connection.CreateCommand();
+                command.Transaction = transaction;
+                command.CommandText = sql;
+                command.AddParameter("email", email);
+
+                using var reader = await ((DbCommand)command).ExecuteReaderAsync();
                 if (!await reader.ReadAsync())
                 {
                     return null;
@@ -97,7 +137,7 @@ namespace Poteto.Infrastructure.Data
                 command.AddParameter("created_at", user.CreatedAt);
                 command.AddParameter("updated_at", user.UpdatedAt);
 
-                await command.ExecuteNonQueryAsync();
+                await ((DbCommand)command).ExecuteNonQueryAsync();
 
                 user.Id = (int)idParameter.Value;
                 return user;
@@ -134,7 +174,7 @@ namespace Poteto.Infrastructure.Data
                 command.AddParameter("password_hash", user.PasswordHash);
                 command.AddParameter("updated_at", user.UpdatedAt);
 
-                await command.ExecuteNonQueryAsync();
+                await ((DbCommand)command).ExecuteNonQueryAsync();
                 return user;
             });
         }
@@ -157,7 +197,7 @@ namespace Poteto.Infrastructure.Data
                 command.CommandText = sql;
                 command.AddParameter("id", id);
 
-                var result = await command.ExecuteNonQueryAsync();
+                var result = await ((DbCommand)command).ExecuteNonQueryAsync();
                 return result > 0;
             });
         }
