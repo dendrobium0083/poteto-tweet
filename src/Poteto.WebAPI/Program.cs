@@ -16,69 +16,133 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// appsettings.json から接続文字列を取得
-string? connectionString = builder.Configuration.GetConnectionString("OracleConnection");
-if (string.IsNullOrWhiteSpace(connectionString))
-{
-    throw new InvalidOperationException("OracleConnection の接続文字列が設定されていません。");
-}
+// 設定の検証
+ValidateConfiguration(builder.Configuration);
 
-// Serilog の設定（環境に応じたログ出力の設定例）
-var environment = builder.Environment.EnvironmentName;
-var logFilePathPattern = "logs/{Date}.log";
-SerilogConfig.ConfigureLogger(environment, logFilePathPattern);
-builder.Host.UseSerilog();
+// ロギングの設定
+ConfigureLogging(builder);
 
-// コントローラー、Swagger などのサービスを DI コンテナに登録
-builder.Services.AddControllers();
-if (builder.Environment.IsDevelopment())
-{
-    builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen();
-}
-
-// アプリケーション層のサービス登録
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<ITweetService, TweetService>();
-builder.Services.AddScoped<ICommentService, CommentService>();
-builder.Services.AddScoped<IFollowService, FollowService>();
-builder.Services.AddScoped<IBlockService, BlockService>();
-builder.Services.AddScoped<ILikeService, LikeService>();
-
-// ドメイン層のサービス登録
-builder.Services.AddScoped<TweetDomainService>();
-
-// インフラ層のリポジトリ登録
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<ITweetRepository, TweetRepository>();
-builder.Services.AddScoped<ICommentRepository, CommentRepository>();
-builder.Services.AddScoped<IFollowRepository, FollowRepository>();
-builder.Services.AddScoped<IBlockRepository, BlockRepository>();
-builder.Services.AddScoped<ILikeRepository, LikeRepository>();
-
-// OracleConfiguration をシングルトンで登録し、接続文字列を注入
-builder.Services.AddSingleton(new OracleConfiguration(connectionString));
-
-// DbConnectionFactory は OracleConfiguration を受け取るので引数なしで登録できる
-builder.Services.AddScoped<DbConnectionFactory>();
-
-// Unit of Work の登録
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+// サービスの登録
+ConfigureServices(builder.Services, builder.Configuration);
 
 var app = builder.Build();
 
-// 開発環境の場合、Swagger UI を有効化
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-// カスタムミドルウェア (例: LoggingMiddleware) の登録
-app.UseMiddleware<LoggingMiddleware>();
-
-app.UseHttpsRedirection();
-app.UseAuthorization();
-app.MapControllers();
+// ミドルウェアの設定
+ConfigureMiddleware(app, builder.Environment);
 
 app.Run();
+
+/// <summary>
+/// 設定の検証を行います
+/// </summary>
+/// <param name="configuration">アプリケーション設定</param>
+/// <exception cref="InvalidOperationException">必須の設定が不足している場合</exception>
+static void ValidateConfiguration(IConfiguration configuration)
+{
+    string? connectionString = configuration.GetConnectionString("OracleConnection");
+    if (string.IsNullOrWhiteSpace(connectionString))
+    {
+        throw new InvalidOperationException("OracleConnection の接続文字列が設定されていません。");
+    }
+}
+
+/// <summary>
+/// ロギングの設定を行います
+/// </summary>
+/// <param name="builder">WebApplicationBuilder</param>
+static void ConfigureLogging(WebApplicationBuilder builder)
+{
+    var environment = builder.Environment.EnvironmentName;
+    var logFilePathPattern = "logs/{Date}.log";
+    SerilogConfig.ConfigureLogger(environment, logFilePathPattern);
+    builder.Host.UseSerilog();
+}
+
+/// <summary>
+/// サービスの登録を行います
+/// </summary>
+/// <param name="services">IServiceCollection</param>
+/// <param name="configuration">IConfiguration</param>
+static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+{
+    // コントローラー、Swagger などのサービスを登録
+    services.AddControllers();
+    if (configuration.GetValue<bool>("EnableSwagger"))
+    {
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen();
+    }
+
+    // アプリケーション層のサービス登録
+    RegisterApplicationServices(services);
+
+    // ドメイン層のサービス登録
+    RegisterDomainServices(services);
+
+    // インフラ層のリポジトリ登録
+    RegisterInfrastructureServices(services, configuration);
+}
+
+/// <summary>
+/// アプリケーション層のサービスを登録します
+/// </summary>
+/// <param name="services">IServiceCollection</param>
+static void RegisterApplicationServices(IServiceCollection services)
+{
+    services.AddScoped<IUserService, UserService>();
+    services.AddScoped<ITweetService, TweetService>();
+    services.AddScoped<ICommentService, CommentService>();
+    services.AddScoped<IFollowService, FollowService>();
+    services.AddScoped<IBlockService, BlockService>();
+    services.AddScoped<ILikeService, LikeService>();
+}
+
+/// <summary>
+/// ドメイン層のサービスを登録します
+/// </summary>
+/// <param name="services">IServiceCollection</param>
+static void RegisterDomainServices(IServiceCollection services)
+{
+    services.AddScoped<TweetDomainService>();
+}
+
+/// <summary>
+/// インフラ層のサービスを登録します
+/// </summary>
+/// <param name="services">IServiceCollection</param>
+/// <param name="configuration">IConfiguration</param>
+static void RegisterInfrastructureServices(IServiceCollection services, IConfiguration configuration)
+{
+    // リポジトリの登録
+    services.AddScoped<IUserRepository, UserRepository>();
+    services.AddScoped<ITweetRepository, TweetRepository>();
+    services.AddScoped<ICommentRepository, CommentRepository>();
+    services.AddScoped<IFollowRepository, FollowRepository>();
+    services.AddScoped<IBlockRepository, BlockRepository>();
+    services.AddScoped<ILikeRepository, LikeRepository>();
+
+    // データベース関連の設定
+    var connectionString = configuration.GetConnectionString("OracleConnection")!;
+    services.AddSingleton(new OracleConfiguration(connectionString));
+    services.AddScoped<DbConnectionFactory>();
+    services.AddScoped<IUnitOfWork, UnitOfWork>();
+}
+
+/// <summary>
+/// ミドルウェアの設定を行います
+/// </summary>
+/// <param name="app">WebApplication</param>
+/// <param name="environment">IHostEnvironment</param>
+static void ConfigureMiddleware(WebApplication app, IHostEnvironment environment)
+{
+    if (environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
+
+    app.UseMiddleware<LoggingMiddleware>();
+    app.UseHttpsRedirection();
+    app.UseAuthorization();
+    app.MapControllers();
+}
